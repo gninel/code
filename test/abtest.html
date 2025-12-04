@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>牛顿第一定律在线演示实验</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        canvas { border: 1px solid black; background-color: #f0f0f0; }
+        button { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>牛顿第一定律演示：惯性定律</h1>
+    <p>说明：球在无摩擦平面上匀速运动，展示物体在无外力作用下的惯性。点击“启动”开始运动。</p>
+    <canvas id="canvas" width="800" height="200"></canvas>
+    <br>
+    <button onclick="startMotion()">启动运动</button>
+    <button onclick="reset()">重置</button>
+    <button onclick="changeSpeed(2)">加速 (x2)</button>
+    <button onclick="changeSpeed(0.5)">减速 (x0.5)</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let ball = { x: 50, y: 100, radius: 20, vx: 0, vy: 0 }; // 初始位置和速度
+        let animationId;
+
+        function drawBall() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'blue';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function update() {
+            ball.x += ball.vx; // 匀速运动（无加速度）
+
+            // 边界反弹（模拟无限空间，但为了演示添加反弹）
+            if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                ball.vx = -ball.vx;
+            }
+
+            drawBall();
+            animationId = requestAnimationFrame(update);
+        }
+
+        function startMotion() {
+            if (ball.vx === 0) ball.vx = 5; // 初始速度
+            cancelAnimationFrame(animationId);
+            update();
+        }
+
+        function reset() {
+            cancelAnimationFrame(animationId);
+            ball.x = 50;
+            ball.vx = 0;
+            drawBall();
+        }
+
+        function changeSpeed(factor) {
+            ball.vx *= factor; // 改变速度，但保持匀速（无加速度）
+        }
+
+        // 初始绘制
+        drawBall();
+    </script>
+</body>
+</html>

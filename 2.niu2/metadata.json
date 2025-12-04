@@ -1,0 +1,5 @@
+{
+  "name": "牛顿第二定律实验室",
+  "description": "演示牛顿第二定律 (F=ma) 的交互式物理仿真实验，包含实时数据可视化和 AI 物理助教。",
+  "requestFramePermissions": []
+}

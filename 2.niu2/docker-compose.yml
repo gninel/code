@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  newton-lab:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+      - DOUBAO_API_KEY=${DOUBAO_API_KEY}
+    restart: unless-stopped
+    volumes:
+      - ./logs:/var/log/nginx
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
