@@ -421,7 +421,7 @@ class FoodProvider extends ChangeNotifier {
     DateTime? endDate,
     String? mealType,
   }) {
-    return _foodItems.where((item) {
+    final filtered = _foodItems.where((item) {
       bool matchesDate = true;
       bool matchesMealType = true;
 
@@ -438,6 +438,10 @@ class FoodProvider extends ChangeNotifier {
 
       return matchesDate && matchesMealType;
     }).toList();
+    
+    // 确保按时间由新到旧排序
+    filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return filtered;
   }
 
   /// 获取统计信息

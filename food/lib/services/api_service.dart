@@ -58,45 +58,83 @@ class ApiService {
   /// 识别食物图片
   /// [languageCode] - 语言代码 ('en' 或 'zh')
   Future<ApiResponse> recognizeFood(String imagePath, {String languageCode = 'zh'}) async {
+    // ========== 开始计时 ==========
+    final totalStopwatch = Stopwatch()..start();
+    final timestamps = <String, int>{};
+    
     try {
-      debugPrint('开始识别食物: $imagePath');
+      debugPrint('========== 开始识别食物 ==========');
+      debugPrint('图片路径: $imagePath');
+      debugPrint('语言设置: $languageCode');
+      timestamps['start'] = totalStopwatch.elapsedMilliseconds;
 
       // 检查文件
       final file = File(imagePath);
       if (!await file.exists()) {
+        debugPrint('❌ 图片文件不存在');
         return ApiResponse.error('图片文件不存在');
       }
 
       final fileSize = await file.length();
+      debugPrint('原始图片大小: ${(fileSize / 1024).toStringAsFixed(2)}KB');
       if (fileSize > _maxFileSize) {
         return ApiResponse.error('图片文件过大，请选择小于10MB的图片');
       }
+      timestamps['file_check'] = totalStopwatch.elapsedMilliseconds;
 
       // 转换图片为Base64
+      debugPrint('--- 开始图片处理 ---');
       final base64Image = await _imageToBase64(imagePath);
       if (base64Image == null) {
+        debugPrint('❌ 图片格式不支持');
         return ApiResponse.error('图片格式不支持');
       }
+      timestamps['image_process'] = totalStopwatch.elapsedMilliseconds;
+      debugPrint('图片处理耗时: ${timestamps['image_process']! - timestamps['file_check']!}ms');
 
       // 构建请求（根据语言选择prompt）
       final requestData = _buildRequestData(base64Image, languageCode: languageCode);
+      timestamps['build_request'] = totalStopwatch.elapsedMilliseconds;
 
       // 发送请求
+      debugPrint('--- 开始API请求 ---');
       final response = await _sendRequest(requestData);
+      timestamps['api_response'] = totalStopwatch.elapsedMilliseconds;
+      debugPrint('API请求耗时: ${timestamps['api_response']! - timestamps['build_request']!}ms');
 
       // 解析响应
+      debugPrint('--- 开始解析响应 ---');
       if (response.data == null) {
         return ApiResponse.error('API响应为空');
       }
       final analysis = _parseResponse(response.data!);
+      timestamps['parse_response'] = totalStopwatch.elapsedMilliseconds;
+      debugPrint('响应解析耗时: ${timestamps['parse_response']! - timestamps['api_response']!}ms');
+
+      // 停止计时并输出总结
+      totalStopwatch.stop();
+      debugPrint('========== 识别完成 ==========');
+      debugPrint('📊 性能统计:');
+      debugPrint('  • 文件检查: ${timestamps['file_check']}ms');
+      debugPrint('  • 图片处理: ${timestamps['image_process']! - timestamps['file_check']!}ms');
+      debugPrint('  • 构建请求: ${timestamps['build_request']! - timestamps['image_process']!}ms');
+      debugPrint('  • API请求: ${timestamps['api_response']! - timestamps['build_request']!}ms');
+      debugPrint('  • 解析响应: ${timestamps['parse_response']! - timestamps['api_response']!}ms');
+      debugPrint('  ⏱️  总耗时: ${totalStopwatch.elapsedMilliseconds}ms (${(totalStopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)}秒)');
+      debugPrint('✅ 识别结果: ${analysis.foodName}, ${analysis.calories}千卡');
+      debugPrint('==============================');
 
       return ApiResponse.success(analysis, rawResponse: response.data);
 
     } on DioException catch (e) {
-      debugPrint('Dio Error: ${e.message}');
+      totalStopwatch.stop();
+      debugPrint('❌ Dio Error: ${e.message}');
+      debugPrint('总耗时(失败): ${totalStopwatch.elapsedMilliseconds}ms');
       return _handleDioError(e);
     } catch (e) {
-      debugPrint('Unknown Error: $e');
+      totalStopwatch.stop();
+      debugPrint('❌ Unknown Error: $e');
+      debugPrint('总耗时(失败): ${totalStopwatch.elapsedMilliseconds}ms');
       return ApiResponse.error('识别失败: ${e.toString()}');
     }
   }
