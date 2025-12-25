@@ -1,0 +1,268 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: #333;
+}
+
+.game-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-header h1 {
+    font-size: 2em;
+    color: #667eea;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-panel {
+    margin-bottom: 20px;
+}
+
+.score-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.score-item {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
+
+.score-item .label {
+    display: block;
+    font-size: 0.85em;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.score-item .value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.canvas-wrapper {
+    position: relative;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 10;
+}
+
+.game-over.hidden {
+    display: none;
+}
+
+.game-over h2 {
+    font-size: 2em;
+    margin-bottom: 15px;
+    color: #f5576c;
+}
+
+.game-over p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.difficulty-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f7f7f7;
+    border-radius: 10px;
+}
+
+.difficulty-panel label {
+    font-weight: bold;
+    color: #667eea;
+}
+
+.difficulty-panel select {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    font-size: 1em;
+    background: white;
+    cursor: pointer;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.control-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.btn {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+}
+
+.btn-success:hover {
+    box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.btn-warning:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+}
+
+.touch-controls {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f7f7f7;
+    border-radius: 10px;
+}
+
+.control-btn {
+    width: 80px;
+    height: 80px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.control-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#downBtn, #dropBtn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.instructions {
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 0.9em;
+}
+
+.instructions h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.instructions p {
+    margin-bottom: 5px;
+    line-height: 1.6;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .game-header h1 {
+        font-size: 1.5em;
+    }
+
+    .score-item .value {
+        font-size: 1.2em;
+    }
+
+    .control-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 1em;
+    }
+
+    .game-container {
+        padding: 15px;
+    }
+}
+
+@media (min-width: 768px) {
+    .touch-controls {
+        display: none;
+    }
+}
