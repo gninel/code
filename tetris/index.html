@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>俄罗斯方块</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 游戏标题 -->
+        <header class="game-header">
+            <h1>🎮 俄罗斯方块</h1>
+        </header>
+
+        <!-- 游戏信息面板 -->
+        <div class="info-panel">
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="label">当前分数</span>
+                    <span class="value" id="score">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">最高分</span>
+                    <span class="value" id="highScore">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">等级</span>
+                    <span class="value" id="level">1</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">消除行数</span>
+                    <span class="value" id="lines">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏画布 -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas"></canvas>
+            <div id="gameOver" class="game-over hidden">
+                <h2>游戏结束</h2>
+                <p>得分: <span id="finalScore">0</span></p>
+                <button id="restartBtn" class="btn btn-primary">重新开始</button>
+            </div>
+        </div>
+
+        <!-- 难度选择 -->
+        <div class="difficulty-panel">
+            <label for="difficulty">难度:</label>
+            <select id="difficulty">
+                <option value="1">简单 (慢速)</option>
+                <option value="2" selected>普通 (中速)</option>
+                <option value="3">困难 (快速)</option>
+                <option value="4">地狱 (极速)</option>
+            </select>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="controls">
+            <div class="control-row">
+                <button id="startBtn" class="btn btn-success">开始游戏</button>
+                <button id="pauseBtn" class="btn btn-warning" disabled>暂停</button>
+            </div>
+
+            <div class="touch-controls">
+                <div class="control-row">
+                    <button class="control-btn" id="rotateBtn">↻<br>旋转</button>
+                </div>
+                <div class="control-row">
+                    <button class="control-btn" id="leftBtn">←</button>
+                    <button class="control-btn" id="downBtn">↓<br>加速</button>
+                    <button class="control-btn" id="rightBtn">→</button>
+                </div>
+                <div class="control-row">
+                    <button class="control-btn" id="dropBtn">⬇<br>直落</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 说明 -->
+        <div class="instructions">
+            <h3>操作说明</h3>
+            <p><strong>触屏:</strong> 使用下方按钮控制</p>
+            <p><strong>键盘:</strong> ← → 移动 | ↑ 旋转 | ↓ 加速 | 空格 直落</p>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
