@@ -4,6 +4,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
 import 'package:voice_autobiography_flutter/data/services/interview_service.dart';
+import 'package:voice_autobiography_flutter/data/services/interview_question_pool.dart';
 import 'package:voice_autobiography_flutter/data/services/doubao_ai_service.dart';
 import 'package:voice_autobiography_flutter/data/services/database_service.dart';
 import 'package:voice_autobiography_flutter/domain/repositories/voice_record_repository.dart';
@@ -16,6 +17,7 @@ import 'interview_integration_test.mocks.dart';
 @GenerateMocks([
   DoubaoAiService,
   VoiceRecordRepository,
+  InterviewQuestionPool,
 ])
 @GenerateNiceMocks([
   MockSpec<DatabaseService>(),
@@ -25,6 +27,7 @@ void main() {
     late MockDoubaoAiService mockAiService;
     late MockDatabaseService mockDatabaseService;
     late MockVoiceRecordRepository mockVoiceRecordRepository;
+    late MockInterviewQuestionPool mockQuestionPool;
     late InterviewService interviewService;
 
     setUp(() {
@@ -32,10 +35,14 @@ void main() {
       mockDatabaseService = MockDatabaseService();
       mockVoiceRecordRepository = MockVoiceRecordRepository();
 
+      mockVoiceRecordRepository = MockVoiceRecordRepository();
+      mockQuestionPool = MockInterviewQuestionPool();
+
       interviewService = InterviewService(
         mockAiService,
         mockVoiceRecordRepository,
         mockDatabaseService,
+        mockQuestionPool,
       );
     });
 
@@ -228,7 +235,8 @@ void main() {
             answeredQuestions: anyNamed('answeredQuestions'),
           )).thenAnswer((_) async => '问题${i + 2}');
 
-          final session = await interviewService.answerCurrentQuestion('回答${i + 1}');
+          final session =
+              await interviewService.answerCurrentQuestion('回答${i + 1}');
 
           // 验证进度
           final expectedProgress = (i + 1) / (i + 2);
@@ -450,7 +458,8 @@ void main() {
           answeredQuestions: anyNamed('answeredQuestions'),
         )).thenAnswer((_) async => '下一个问题');
 
-        final updatedSession = await interviewService.answerCurrentQuestion('回答');
+        final updatedSession =
+            await interviewService.answerCurrentQuestion('回答');
 
         // 验证会话更新成功
         expect(updatedSession.questions.length, 2);
@@ -516,8 +525,8 @@ void main() {
         // 验证超时异常
         expect(
           () => interviewService.startNewSession().timeout(
-            const Duration(seconds: 5),
-          ),
+                const Duration(seconds: 5),
+              ),
           throwsA(isA<TimeoutException>()),
         );
       });
@@ -563,7 +572,8 @@ void main() {
 
         // 超长回答（5000字符）
         final longAnswer = 'A' * 5000;
-        final session = await interviewService.answerCurrentQuestion(longAnswer);
+        final session =
+            await interviewService.answerCurrentQuestion(longAnswer);
 
         expect(session.questions[0].answer, longAnswer);
         expect(session.questions[0].answer!.length, 5000);
@@ -586,7 +596,8 @@ void main() {
 
         // 包含特殊字符的回答
         const specialAnswer = '这是一个回答！@#\$%^&*()_+-=[]{}|;:\'",.<>?/`~\n\t';
-        final session = await interviewService.answerCurrentQuestion(specialAnswer);
+        final session =
+            await interviewService.answerCurrentQuestion(specialAnswer);
 
         expect(session.questions[0].answer, specialAnswer);
       });

@@ -3,6 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
 import 'package:voice_autobiography_flutter/data/services/interview_service.dart';
+import 'package:voice_autobiography_flutter/data/services/interview_question_pool.dart';
 import 'package:voice_autobiography_flutter/data/services/doubao_ai_service.dart';
 import 'package:voice_autobiography_flutter/data/services/database_service.dart';
 import 'package:voice_autobiography_flutter/domain/repositories/voice_record_repository.dart';
@@ -14,6 +15,7 @@ import 'interview_service_test.mocks.dart';
   DoubaoAiService,
   VoiceRecordRepository,
   DatabaseService,
+  InterviewQuestionPool,
 ])
 void main() {
   InterviewService createService() {
@@ -21,6 +23,7 @@ void main() {
       MockDoubaoAiService(),
       MockVoiceRecordRepository(),
       MockDatabaseService(),
+      MockInterviewQuestionPool(),
     );
   }
 
@@ -33,16 +36,20 @@ void main() {
       late MockDoubaoAiService mockAiService;
       late MockVoiceRecordRepository mockRecordRepo;
       late MockDatabaseService mockDbService;
+      late MockInterviewQuestionPool mockQuestionPool;
 
       setUp(() {
         mockAiService = MockDoubaoAiService();
         mockRecordRepo = MockVoiceRecordRepository();
         mockDbService = MockDatabaseService();
 
+        mockQuestionPool = MockInterviewQuestionPool();
+
         service = InterviewService(
           mockAiService,
           mockRecordRepo,
           mockDbService,
+          mockQuestionPool,
         );
       });
 
@@ -55,11 +62,10 @@ void main() {
           answeredQuestions: [],
         )).thenAnswer((_) async => '第一个问题');
 
-        when(mockDbService.transaction(any))
-            .thenAnswer((invocation) async {
-              final callback = invocation.positionalArguments[0] as dynamic;
-              return await callback(null);
-            });
+        when(mockDbService.transaction(any)).thenAnswer((invocation) async {
+          final callback = invocation.positionalArguments[0] as dynamic;
+          return await callback(null);
+        });
 
         final result = await service.startNewSession();
 
@@ -78,11 +84,10 @@ void main() {
           answeredQuestions: [],
         )).thenAnswer((_) async => '第一个问题');
 
-        when(mockDbService.transaction(any))
-            .thenAnswer((invocation) async {
-              final callback = invocation.positionalArguments[0] as dynamic;
-              return await callback(null);
-            });
+        when(mockDbService.transaction(any)).thenAnswer((invocation) async {
+          final callback = invocation.positionalArguments[0] as dynamic;
+          return await callback(null);
+        });
 
         await service.startNewSession();
 
@@ -100,6 +105,7 @@ void main() {
           MockDoubaoAiService(),
           MockVoiceRecordRepository(),
           mockDbService,
+          MockInterviewQuestionPool(),
         );
       });
 
@@ -115,11 +121,11 @@ void main() {
       test('should return null when session is inactive', () async {
         when(mockDbService.querySingle(any, orderBy: any))
             .thenAnswer((_) async => {
-          'id': 'session-1',
-          'current_question_index': 0,
-          'is_active': 0,
-          'created_at': 1704096000000,
-        });
+                  'id': 'session-1',
+                  'current_question_index': 0,
+                  'is_active': 0,
+                  'created_at': 1704096000000,
+                });
 
         when(mockDbService.query(
           any,
@@ -148,11 +154,11 @@ void main() {
 
         when(mockDbService.querySingle(any, orderBy: any))
             .thenAnswer((_) async => {
-          'id': 'session-1',
-          'current_question_index': 0,
-          'is_active': 1,
-          'created_at': 1704096000000,
-        });
+                  'id': 'session-1',
+                  'current_question_index': 0,
+                  'is_active': 1,
+                  'created_at': 1704096000000,
+                });
 
         when(mockDbService.query(
           any,
@@ -196,11 +202,10 @@ void main() {
           answeredQuestions: [],
         )).thenAnswer((_) async => '测试问题');
 
-        when(mockDbService.transaction(any))
-            .thenAnswer((invocation) async {
-              final callback = invocation.positionalArguments[0] as dynamic;
-              return await callback(null);
-            });
+        when(mockDbService.transaction(any)).thenAnswer((invocation) async {
+          final callback = invocation.positionalArguments[0] as dynamic;
+          return await callback(null);
+        });
 
         await service.startNewSession();
         await service.endSession();
@@ -242,11 +247,10 @@ void main() {
           answeredQuestions: [],
         )).thenAnswer((_) async => '测试问题');
 
-        when(mockDbService.transaction(any))
-            .thenAnswer((invocation) async {
-              final callback = invocation.positionalArguments[0] as dynamic;
-              return await callback(null);
-            });
+        when(mockDbService.transaction(any)).thenAnswer((invocation) async {
+          final callback = invocation.positionalArguments[0] as dynamic;
+          return await callback(null);
+        });
 
         await service.startNewSession();
 
@@ -285,11 +289,10 @@ void main() {
           answeredQuestions: [],
         )).thenAnswer((_) async => '测试问题');
 
-        when(mockDbService.transaction(any))
-            .thenAnswer((invocation) async {
-              final callback = invocation.positionalArguments[0] as dynamic;
-              return await callback(null);
-            });
+        when(mockDbService.transaction(any)).thenAnswer((invocation) async {
+          final callback = invocation.positionalArguments[0] as dynamic;
+          return await callback(null);
+        });
 
         await service.startNewSession();
 

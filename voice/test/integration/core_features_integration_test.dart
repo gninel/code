@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:dio/dio.dart';
+import 'package:dartz/dartz.dart';
 
 import 'package:voice_autobiography_flutter/core/services/prompt_loader_service.dart';
 import 'package:voice_autobiography_flutter/data/services/doubao_ai_service.dart';
@@ -151,8 +152,7 @@ void main() {
         expect(earlyUser, contains('初期'));
 
         // 后期阶段(5个或更多问题)
-        final (lateSystem, lateUser) =
-            promptLoader.getInterviewQuestionPrompt(
+        final (lateSystem, lateUser) = promptLoader.getInterviewQuestionPrompt(
           userContentSummary: '用户简要内容',
           answeredQuestions: ['问题1', '问题2', '问题3', '问题4', '问题5'],
         );
@@ -193,16 +193,16 @@ void main() {
           any,
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'choices': [
-              {
-                'message': {'content': '生成的章节内容'}
-              }
-            ]
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'choices': [
+                  {
+                    'message': {'content': '生成的章节内容'}
+                  }
+                ]
+              },
+            ));
 
         // 执行: 调用生成章节方法
         final result = await aiService.generateChapterContent(
@@ -235,10 +235,10 @@ void main() {
           '/auth/send-code',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {'message': '验证码已发送'},
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {'message': '验证码已发送'},
+            ));
 
         // 执行
         await cloudSyncService.sendVerificationCode('13800138000');
@@ -256,19 +256,19 @@ void main() {
           '/auth/phone/register',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'test_token_123',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'user_001',
-              'phone': '13800138000',
-              'nickname': '测试用户',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'test_token_123',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'user_001',
+                  'phone': '13800138000',
+                  'nickname': '测试用户',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         // 执行
         final user = await cloudSyncService.registerWithPhone(
@@ -291,19 +291,19 @@ void main() {
           '/auth/phone/login',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'test_token_456',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'user_002',
-              'phone': '13900139000',
-              'nickname': '老用户',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'test_token_456',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'user_002',
+                  'phone': '13900139000',
+                  'nickname': '老用户',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         // 执行
         final user = await cloudSyncService.loginWithPhone(
@@ -344,18 +344,18 @@ void main() {
           '/auth/phone/login',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'test_token',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'user_003',
-              'phone': '13800138000',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'test_token',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'user_003',
+                  'phone': '13800138000',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         await cloudSyncService.loginWithPhone('13800138000', '123456');
         expect(cloudSyncService.isLoggedIn, isTrue);
@@ -395,18 +395,18 @@ void main() {
           '/auth/phone/login',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'test_token',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'user_001',
-              'phone': '13800138000',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'test_token',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'user_001',
+                  'phone': '13800138000',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         await cloudSyncService.loginWithPhone('13800138000', '123456');
 
@@ -415,10 +415,10 @@ void main() {
           '/sync/upload',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {'message': '上传成功', 'count': 2},
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {'message': '上传成功', 'count': 2},
+            ));
 
         // 准备测试数据
         final testRecords = [
@@ -465,45 +465,45 @@ void main() {
           '/auth/phone/login',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'test_token',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'user_001',
-              'phone': '13800138000',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'test_token',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'user_001',
+                  'phone': '13800138000',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         await cloudSyncService.loginWithPhone('13800138000', '123456');
 
         // Mock下载API响应
         when(mockDio.get('/sync/download')).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'voice_records': [
-              {
-                'id': 'record_002',
-                'title': '云端录音',
-                'content': '云端录音内容',
-                'timestamp': DateTime.now().toIso8601String(),
-              }
-            ],
-            'autobiographies': [
-              {
-                'id': 'auto_002',
-                'title': '云端自传',
-                'content': '云端自传内容',
-                'created_at': DateTime.now().toIso8601String(),
-                'updated_at': DateTime.now().toIso8601String(),
-              }
-            ],
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'voice_records': [
+                  {
+                    'id': 'record_002',
+                    'title': '云端录音',
+                    'content': '云端录音内容',
+                    'timestamp': DateTime.now().toIso8601String(),
+                  }
+                ],
+                'autobiographies': [
+                  {
+                    'id': 'auto_002',
+                    'title': '云端自传',
+                    'content': '云端自传内容',
+                    'created_at': DateTime.now().toIso8601String(),
+                    'updated_at': DateTime.now().toIso8601String(),
+                  }
+                ],
+              },
+            ));
 
         // 执行下载
         final data = await cloudSyncService.downloadData();
@@ -535,18 +535,18 @@ void main() {
           '/auth/phone/login',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'test_token',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'user_001',
-              'phone': '13800138000',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'test_token',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'user_001',
+                  'phone': '13800138000',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         await cloudSyncService.loginWithPhone('13800138000', '123456');
 
@@ -561,10 +561,10 @@ void main() {
           '/sync/upload',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {'message': '同步成功'},
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {'message': '同步成功'},
+            ));
 
         // 执行: 启用自动同步
         autoSyncService.enableAutoSync();
@@ -610,10 +610,10 @@ void main() {
           '/auth/send-code',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {'message': '验证码已发送'},
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {'message': '验证码已发送'},
+            ));
 
         await cloudSyncService.sendVerificationCode('13800138000');
 
@@ -621,19 +621,19 @@ void main() {
           '/auth/phone/register',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'access_token': 'integration_test_token',
-            'token_type': 'Bearer',
-            'user': {
-              'id': 'integration_user',
-              'phone': '13800138000',
-              'nickname': '集成测试用户',
-              'created_at': DateTime.now().toIso8601String(),
-            }
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'access_token': 'integration_test_token',
+                'token_type': 'Bearer',
+                'user': {
+                  'id': 'integration_user',
+                  'phone': '13800138000',
+                  'nickname': '集成测试用户',
+                  'created_at': DateTime.now().toIso8601String(),
+                }
+              },
+            ));
 
         final user = await cloudSyncService.registerWithPhone(
           '13800138000',
@@ -649,18 +649,16 @@ void main() {
           any,
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {
-            'choices': [
-              {
-                'message': {
-                  'content': '1985年4月的一个下午，我在学校操场见到了王老师。'
-                }
-              }
-            ]
-          },
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {
+                'choices': [
+                  {
+                    'message': {'content': '1985年4月的一个下午，我在学校操场见到了王老师。'}
+                  }
+                ]
+              },
+            ));
 
         final generatedContent = await aiService.generateChapterContent(
           originalContent: null,
@@ -675,17 +673,17 @@ void main() {
           '/sync/upload',
           data: anyNamed('data'),
         )).thenAnswer((_) async => Response(
-          requestOptions: RequestOptions(path: ''),
-          statusCode: 200,
-          data: {'message': '上传成功'},
-        ));
+              requestOptions: RequestOptions(path: ''),
+              statusCode: 200,
+              data: {'message': '上传成功'},
+            ));
 
         final autobiography = Autobiography(
           id: 'auto_integration',
           title: '我的童年',
           content: generatedContent,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
+          generatedAt: DateTime.now(),
+          lastModifiedAt: DateTime.now(),
         );
 
         await cloudSyncService.uploadData(
@@ -696,7 +694,8 @@ void main() {
         // 验证整个流程
         verify(mockCloudDio.post('/auth/send-code', data: anyNamed('data')))
             .called(1);
-        verify(mockCloudDio.post('/auth/phone/register', data: anyNamed('data')))
+        verify(mockCloudDio.post('/auth/phone/register',
+                data: anyNamed('data')))
             .called(1);
         verify(mockAiDio.post(any, data: anyNamed('data'))).called(1);
         verify(mockCloudDio.post('/sync/upload', data: anyNamed('data')))
@@ -728,7 +727,9 @@ void main() {
             statusCode: 200,
             data: {
               'choices': [
-                {'message': {'content': '专业的传记风格内容'}}
+                {
+                  'message': {'content': '专业的传记风格内容'}
+                }
               ]
             },
           ));

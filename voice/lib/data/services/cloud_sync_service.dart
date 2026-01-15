@@ -18,12 +18,14 @@ class CloudSyncService {
   String? _accessToken;
   User? _currentUser;
 
-  CloudSyncService() : _dio = Dio(BaseOptions(
-    baseUrl: _baseUrl,
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 60),
-    headers: {'Content-Type': 'application/json'},
-  ));
+  CloudSyncService({Dio? dio})
+      : _dio = dio ??
+            Dio(BaseOptions(
+              baseUrl: _baseUrl,
+              connectTimeout: const Duration(seconds: 30),
+              receiveTimeout: const Duration(seconds: 60),
+              headers: {'Content-Type': 'application/json'},
+            ));
 
   /// 是否已登录
   bool get isLoggedIn => _accessToken != null && _currentUser != null;
@@ -172,7 +174,8 @@ class CloudSyncService {
   }
 
   /// 用户注册（邮箱）
-  Future<User> register(String email, String password, {String? nickname}) async {
+  Future<User> register(String email, String password,
+      {String? nickname}) async {
     try {
       final response = await _dio.post('/auth/register', data: {
         'email': email,
@@ -215,7 +218,7 @@ class CloudSyncService {
     _accessToken = null;
     _currentUser = null;
     _updateAuthHeader();
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
     await prefs.remove('current_user');
@@ -243,8 +246,10 @@ class CloudSyncService {
 
     try {
       final response = await _dio.post('/sync/upload', data: {
-        'voice_records': voiceRecords.map((r) => _voiceRecordToJson(r)).toList(),
-        'autobiographies': autobiographies.map((a) => _autobiographyToJson(a)).toList(),
+        'voice_records':
+            voiceRecords.map((r) => _voiceRecordToJson(r)).toList(),
+        'autobiographies':
+            autobiographies.map((a) => _autobiographyToJson(a)).toList(),
       });
 
       if (response.data['success'] != true) {
@@ -256,7 +261,11 @@ class CloudSyncService {
   }
 
   /// 从云端下载数据
-  Future<({List<VoiceRecord> voiceRecords, List<Autobiography> autobiographies})> downloadData() async {
+  Future<
+      ({
+        List<VoiceRecord> voiceRecords,
+        List<Autobiography> autobiographies
+      })> downloadData() async {
     if (!isLoggedIn) {
       throw Exception('请先登录');
     }
@@ -327,12 +336,14 @@ class CloudSyncService {
       'style': auto.style?.name,
       'voice_record_ids': auto.voiceRecordIds,
       'tags': auto.tags,
-      'chapters': auto.chapters.map((c) => {
-        'id': c.id,
-        'title': c.title,
-        'content': c.content,
-        'order': c.order,
-      }).toList(),
+      'chapters': auto.chapters
+          .map((c) => {
+                'id': c.id,
+                'title': c.title,
+                'content': c.content,
+                'order': c.order,
+              })
+          .toList(),
       'generated_at': auto.generatedAt.toIso8601String(),
       'last_modified_at': auto.lastModifiedAt.toIso8601String(),
     };
@@ -358,21 +369,31 @@ class CloudSyncService {
 
   AutobiographyStatus _parseStatus(String? status) {
     switch (status) {
-      case 'draft': return AutobiographyStatus.draft;
-      case 'published': return AutobiographyStatus.published;
-      case 'archived': return AutobiographyStatus.archived;
-      default: return AutobiographyStatus.draft;
+      case 'draft':
+        return AutobiographyStatus.draft;
+      case 'published':
+        return AutobiographyStatus.published;
+      case 'archived':
+        return AutobiographyStatus.archived;
+      default:
+        return AutobiographyStatus.draft;
     }
   }
 
   AutobiographyStyle? _parseStyle(String? style) {
     switch (style) {
-      case 'narrative': return AutobiographyStyle.narrative;
-      case 'emotional': return AutobiographyStyle.emotional;
-      case 'achievement': return AutobiographyStyle.achievement;
-      case 'chronological': return AutobiographyStyle.chronological;
-      case 'reflection': return AutobiographyStyle.reflection;
-      default: return null;
+      case 'narrative':
+        return AutobiographyStyle.narrative;
+      case 'emotional':
+        return AutobiographyStyle.emotional;
+      case 'achievement':
+        return AutobiographyStyle.achievement;
+      case 'chronological':
+        return AutobiographyStyle.chronological;
+      case 'reflection':
+        return AutobiographyStyle.reflection;
+      default:
+        return null;
     }
   }
 
