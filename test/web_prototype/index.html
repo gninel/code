@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Workspace - Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        ai: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Phosphor Icons (for better icons than emoji optionally, but using emoji for now as requested/simple) -->
+    <!-- Using Phosphor Icons for a more premium look than system emojis where appropriate -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 antialiased h-screen flex overflow-hidden">
+    <div id="app" class="flex w-full h-full">
+        <!-- Left Sidebar -->
+        <aside
+            class="bg-white border-r border-gray-200 flex-shrink-0 transition-all duration-300 ease-in-out flex flex-col z-20"
+            :class="isSidebarCollapsed ? 'w-[60px]' : 'w-[220px]'">
+            <!-- Logo Area -->
+            <div class="h-16 flex items-center justify-center border-b border-gray-100">
+                <div v-if="!isSidebarCollapsed" class="text-xl font-bold text-brand-600 flex items-center gap-2">
+                    <i class="ph-fill ph-graduation-cap"></i> 智教工坊
+                </div>
+                <div v-else class="text-2xl text-brand-600">
+                    <i class="ph-fill ph-graduation-cap"></i>
+                </div>
+            </div>
+
+            <!-- Navigation Items -->
+            <div class="flex-1 overflow-y-auto py-4 space-y-1 custom-scrollbar">
+                <template v-for="(group, index) in navMenu" :key="index">
+                    <div class="px-2 mb-2" v-if="!isSidebarCollapsed && group.title">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider pl-2">{{ group.title
+                            }}</span>
+                    </div>
+
+                    <div v-for="item in group.items" :key="item.id">
+                        <!-- Parent Menu Item -->
+                        <div @click="toggleSubmenu(item)"
+                            class="group flex items-center px-3 py-2.5 mx-2 rounded-lg cursor-pointer transition-colors relative"
+                            :class="[
+                                activeNavId === item.id ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            ]">
+                            <i :class="item.icon" class="text-xl shrink-0"></i>
+
+                            <span v-if="!isSidebarCollapsed" class="ml-3 text-sm font-medium flex-1 truncate">
+                                {{ item.label }}
+                            </span>
+
+                            <!-- Expand Icon -->
+                            <i v-if="!isSidebarCollapsed && item.children"
+                                class="ph-bold ph-caret-down ml-auto transition-transform duration-200"
+                                :class="{ 'rotate-180': item.expanded }"></i>
+
+                            <!-- Tooltip for collapsed state -->
+                            <div v-if="isSidebarCollapsed"
+                                class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
+                                {{ item.label }}
+                            </div>
+                        </div>
+
+                        <!-- Submenu -->
+                        <div v-if="!isSidebarCollapsed && item.children && item.expanded" class="mt-1 space-y-0.5">
+                            <div v-for="sub in item.children" :key="sub.id" @click="setActive(sub.id)"
+                                class="flex items-center pl-10 pr-3 py-2 mx-2 rounded-md cursor-pointer text-sm transition-colors"
+                                :class="activeNavId === sub.id ? 'text-brand-600 font-medium bg-brand-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'">
+                                {{ sub.label }}
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Collapse Toggle -->
+            <div class="p-4 border-t border-gray-100 cursor-pointer hover:bg-gray-50 text-gray-500 flex justify-center transition-colors"
+                @click="toggleSidebar">
+                <i class="ph-bold ph-caret-double-left text-xl transition-transform duration-300"
+                    :class="{ 'rotate-180': isSidebarCollapsed }"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 bg-gray-50/50">
+            <!-- Top Header -->
+            <header
+                class="bg-white h-16 border-b border-gray-200 flex items-center justify-between px-6 shadow-sm z-10">
+                <!-- Breadcrumb / Title -->
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">个人主页</h1>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-full relative">
+                        <i class="ph-bold ph-bell text-xl"></i>
+                        <span
+                            class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </button>
+
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                        <div class="text-right hidden md:block">
+                            <div class="text-sm font-semibold text-gray-800">王老师</div>
+                            <div class="text-xs text-gray-500">省级骨干教师</div>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Wang+Lao+Shi&background=6366f1&color=fff"
+                            class="w-10 h-10 rounded-full ring-2 ring-brand-100 cursor-pointer">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+
+                <!-- 1. Teacher Portrait Section -->
+                <section class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="ph-duotone ph-chart-polar text-brand-500"></i> 教师画像
+                        </h2>
+                        <button class="text-sm text-brand-600 hover:text-brand-700 font-medium">查看详细报告 &rarr;</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- Teaching Radar -->
+                        <div
+                            class="lg:col-span-4 bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-700">教学能力画像</h3>
+                                <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">+2.4%</span>
+                            </div>
+                            <div id="teachingChart" class="w-full h-[250px]"></div>
+                        </div>
+
+                        <!-- Research Radar -->
+                        <div
+                            class="lg:col-span-4 bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-gray-700">科研能力画像</h3>
+                                <span class="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full">年度对比</span>
+                            </div>
+                            <div id="researchChart" class="w-full h-[250px]"></div>
+                        </div>
+
+                        <!-- Usage Stats & Info -->
+                        <div class="lg:col-span-4 space-y-6">
+                            <!-- Usage Card -->
+                            <div
+                                class="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+                                <i
+                                    class="ph-duotone ph-trend-up absolute right-[-20px] bottom-[-20px] text-[120px] opacity-10"></i>
+                                <h3 class="text-brand-100 text-sm font-medium mb-1">核心功能使用 (备课/作业/课堂)</h3>
+                                <div class="flex items-baseline gap-2 mb-4">
+                                    <span class="text-4xl font-bold">48</span>
+                                    <span class="text-sm opacity-80">次</span>
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 text-xs bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+                                    <span class="flex items-center gap-1 text-green-300">
+                                        <i class="ph-bold ph-arrow-up-right"></i> 32%
+                                    </span>
+                                    <span class="opacity-70">较上月 (36次)</span>
+                                </div>
+                            </div>
+
+                            <!-- Basic Info Tags -->
+                            <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="font-semibold text-gray-700 text-sm">基本信息</h3>
+                                    <i
+                                        class="ph-bold ph-pencil-simple text-gray-400 cursor-pointer hover:text-brand-600"></i>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">教龄
+                                        8年</span>
+                                    <span
+                                        class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">中学一级</span>
+                                    <span
+                                        class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">高中数学</span>
+                                    <span
+                                        class="px-2.5 py-1 bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200 rounded-md text-xs font-medium">骨干教师</span>
+                                    <span
+                                        class="px-2.5 py-1 bg-orange-50 text-orange-700 ring-1 ring-orange-200 rounded-md text-xs font-medium">奥赛教练</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. AI Assistants Section -->
+                <section class="mb-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-ai-500 text-white p-1.5 rounded-lg shadow-sm shadow-ai-200">
+                            <i class="ph-bold ph-sparkle"></i>
+                        </div>
+                        <h2 class="text-lg font-bold text-gray-800">智能助手</h2>
+                        <span
+                            class="px-2 py-0.5 bg-red-50 text-red-600 text-xs font-bold rounded-full border border-red-100 animate-pulse">6
+                            个待办建议</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div v-for="helper in aiHelpers" :key="helper.id"
+                            class="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-brand-200 transition-all cursor-pointer relative overflow-hidden"
+                            @click="openAiModal(helper)">
+                            <!-- Hover Decoration -->
+                            <div
+                                class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-gray-50 rounded-bl-full -mr-6 -mt-6 group-hover:to-brand-50 transition-colors">
+                            </div>
+
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner flex-shrink-0"
+                                    :class="helper.iconBg">
+                                    {{ helper.icon }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <h3
+                                            class="text-base font-bold text-gray-800 group-hover:text-brand-600 transition-colors truncate">
+                                            {{ helper.title }}</h3>
+                                        <div v-if="helper.badge"
+                                            class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm scale-90 origin-left">
+                                            {{ helper.badge }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5 mb-4">
+                                <div v-for="(feat, idx) in helper.features" :key="idx"
+                                    class="flex items-center gap-2 text-xs text-gray-500">
+                                    <i class="ph-fill ph-check-circle text-brand-400"></i> {{ feat }}
+                                </div>
+                            </div>
+
+                            <button
+                                class="w-full py-2 rounded-lg bg-gray-50 text-gray-700 text-xs font-medium group-hover:bg-brand-600 group-hover:text-white transition-all flex items-center justify-center gap-2">
+                                进入场景
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Recommendations Section -->
+                <section>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="ph-duotone ph-thumbs-up text-orange-500"></i> 为你推荐
+                        </h2>
+                        <button
+                            class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors">
+                            <i class="ph-bold ph-arrows-clockwise"></i> 换一换
+                        </button>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                        <!-- Left Column: Video/Course Recs -->
+                        <div class="flex-1 flex flex-col gap-4">
+                            <div v-for="item in videoRecs" :key="item.id"
+                                class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4 hover:border-brand-300 transition-colors cursor-pointer group flex-1">
+                                <div
+                                    class="w-32 h-24 bg-gray-200 rounded-lg flex-shrink-0 relative overflow-hidden self-center">
+                                    <img :src="item.img"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                    <div
+                                        class="absolute bottom-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded backdrop-blur-sm">
+                                        {{ item.duration }}
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+                                        <i
+                                            class="ph-fill ph-play-circle text-white text-2xl shadow-lg opacity-90 group-hover:scale-110 transition-transform"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1 flex flex-col justify-between py-1">
+                                    <div>
+                                        <div class="flex justify-between items-start">
+                                            <h4
+                                                class="font-bold text-gray-800 line-clamp-2 group-hover:text-brand-600 transition-colors text-sm mb-1">
+                                                {{ item.title }}</h4>
+                                            <span
+                                                class="flex items-center gap-1 text-[10px] text-orange-500 font-bold bg-orange-50 px-1.5 py-0.5 rounded shrink-0">
+                                                <i class="ph-fill ph-star"></i> {{ item.rating }}
+                                            </span>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2 mt-1">
+                                            <span v-for="tag in item.tags" :key="tag"
+                                                class="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{{
+                                                tag }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <span
+                                            class="text-[10px] text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full font-medium truncate max-w-[120px]">{{
+                                            item.reason }}</span>
+                                        <div class="flex gap-2">
+                                            <button class="text-gray-400 hover:text-brand-500"><i
+                                                    class="ph-bold ph-bookmark-simple"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Paper/Resource Recs -->
+                        <div class="flex-1 flex flex-col gap-4">
+                            <div v-for="paper in paperRecs" :key="paper.id"
+                                class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:border-brand-300 transition-colors cursor-pointer group flex-1 flex flex-col justify-center">
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-1 flex-shrink-0">
+                                        <div
+                                            class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500">
+                                            <i class="ph-duotone ph-article text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4
+                                            class="font-bold text-gray-800 mb-1 group-hover:text-brand-600 transition-colors text-sm truncate">
+                                            {{ paper.title }}</h4>
+                                        <p class="text-[10px] text-gray-500 mb-2 truncate">{{ paper.author }} · {{
+                                            paper.journal }}</p>
+                                        <p
+                                            class="text-xs text-gray-600 line-clamp-2 mb-2 bg-gray-50 p-2 rounded text-justify leading-relaxed">
+                                            {{ paper.abstract }}</p>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex gap-2">
+                                                <span v-for="tag in paper.tags" :key="tag"
+                                                    class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{{
+                                                    tag }}</span>
+                                            </div>
+                                            <span class="text-[10px] text-gray-400">引用 {{ paper.citations }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Spacer -->
+                <div class="h-10"></div>
+            </div>
+        </main>
+
+        <!-- AI Chat Modal (Mock) -->
+        <div v-if="showAiModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="closeAiModal"></div>
+            <div
+                class="bg-white rounded-2xl w-full max-w-2xl h-[600px] flex flex-col shadow-2xl z-10 overflow-hidden animate-scale-in">
+                <!-- Modal Header -->
+                <div class="h-14 px-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 rounded-lg flex items-center justify-center bg-brand-600 text-white shadow-sm">
+                            <i class="ph-fill ph-robot"></i>
+                        </div>
+                        <div class="flex flex-col">
+                            <h3 class="font-bold text-gray-800 text-sm">智能教学助手</h3>
+                            <span class="text-[10px] text-gray-500">正在进行: {{ currentAiHelper.title }}</span>
+                        </div>
+                    </div>
+                    <button @click="closeAiModal"
+                        class="p-2 text-gray-400 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
+                    <!-- AI Welcome -->
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0 mt-1">
+                            <i class="ph-fill ph-robot"></i>
+                        </div>
+                        <div class="space-y-2 max-w-[85%]">
+                            <div
+                                class="bg-gray-50 px-4 py-3 rounded-2xl rounded-tl-none text-sm text-gray-800 shadow-sm border border-gray-100">
+                                <p class="mb-2 font-medium">您好！我是您的智能助手。</p>
+                                <p class="mb-2">在<b>{{ currentAiHelper.title }}</b>场景下，我可以为您：</p>
+                                <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                    <li v-for="feat in currentAiHelper.features" :key="feat">{{ feat }}</li>
+                                </ul>
+                            </div>
+                            <div class="text-xs text-gray-400 ml-1">AI 助手 • 刚刚</div>
+                        </div>
+                    </div>
+
+                    <!-- Mock Interaction -->
+                    <div class="flex items-start gap-4 flex-row-reverse">
+                        <img src="https://ui-avatars.com/api/?name=Wang+Li&background=6366f1&color=fff"
+                            class="w-8 h-8 rounded-full shadow-sm mt-1">
+                        <div class="space-y-1 max-w-[85%]">
+                            <div
+                                class="bg-brand-600 px-4 py-3 rounded-2xl rounded-tr-none text-sm text-white shadow-md">
+                                开始任务
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0 mt-1">
+                            <i class="ph-fill ph-robot"></i>
+                        </div>
+                        <div class="space-y-2 max-w-[85%]">
+                            <div
+                                class="bg-gray-50 px-4 py-3 rounded-2xl rounded-tl-none text-sm text-gray-800 shadow-sm border border-gray-100">
+                                <p class="mb-3">好的，已为您启动{{ currentAiHelper.title }}模式... <span
+                                        class="animate-pulse">Loading...</span></p>
+
+                                <div class="bg-white p-3 rounded-xl border border-gray-200 mb-3">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="ph-duotone ph-check-circle text-green-500"></i>
+                                        <span class="font-bold text-gray-700">系统就绪</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500">请上传相关文件或输入具体指令。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 border-t border-gray-100 bg-white">
+                    <div class="relative">
+                        <input type="text" placeholder="输入您的问题..."
+                            class="w-full pl-4 pr-12 py-3 bg-gray-50 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm">
+                        <button
+                            class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+                            <i class="ph-bold ph-paper-plane-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #e5e7eb;
+            border-radius: 20px;
+        }
+
+        @keyframes scale-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-scale-in {
+            animation: scale-in 0.2s ease-out forwards;
+        }
+    </style>
+</body>
+
+</html>

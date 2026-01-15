@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>食物热量识别应用 - Web版</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #FF6B35;
+      margin-bottom: 30px;
+    }
+
+    .status {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .status-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+      border-left: 4px solid #FF6B35;
+    }
+
+    .success {
+      color: #28a745;
+    }
+
+    .warning {
+      color: #ffc107;
+    }
+
+    .info {
+      color: #17a2b8;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary {
+      background: #FF6B35;
+      color: white;
+    }
+
+    .secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .info-box {
+      background: #e9ecef;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .features {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #FF6B35;
+    }
+
+    .feature-item {
+      margin: 10px 0;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .feature-item:last-child {
+      border-bottom: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #FF6B35;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .code-block {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+      margin: 10px 0;
+      border-left: 3px solid #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍎 食物热量识别应用</h1>
+
+    <div class="status">
+      <div class="status-item">
+        <span class="success">✅ 项目代码已创建完成</span>
+      </div>
+      <div class="status-item">
+        <span class="info">💻 正在检测Flutter环境...</span>
+      </div>
+      <div id="flutter-status" class="status-item">
+        <span class="warning">⚠️ 检测中...</span>
+      </div>
+    </div>
+
+    <div class="features">
+      <h3>🎯 应用功能</h3>
+      <div class="feature-item">📷 智能食物识别</div>
+      <div class="feature-item">🔥 热量自动计算</div>
+      <div class="feature-item">📊 每日数据统计</div>
+      <div class="feature-item">🗄️ 本地数据存储</div>
+      <div class="feature-item">📱 Web端完整支持</div>
+    </div>
+
+    <div class="info-box">
+      <h3>🚀 启动方式</h3>
+
+      <p><strong>方式1: Flutter CLI (推荐)</strong></p>
+      <div class="code-block">
+        cd food_calorie_app<br>
+        flutter run -d chrome
+      </div>
+
+      <p><strong>方式2: VSCode调试</strong></p>
+      <div class="code-block">
+        code food_calorie_app<br>
+        按 F5 启动调试
+      </div>
+
+      <p><strong>方式3: 一键脚本</strong></p>
+      <div class="code-block">
+        cd food_calorie_app<br>
+        ./start_debug.sh
+      </div>
+    </div>
+
+    <button class="button primary" onclick="checkFlutter()">
+      🔄 重新检测Flutter
+    </button>
+
+    <button class="button secondary" onclick="showInstructions()">
+      📋 查看安装指导
+    </button>
+
+    <div id="instructions" style="display: none;">
+      <div class="info-box">
+        <h3>💻 Flutter安装指导</h3>
+
+        <p><strong>macOS用户：</strong></p>
+        <div class="code-block">
+          # 使用Homebrew安装
+          brew install --cask flutter
+
+          # 验证安装
+          flutter --version
+        </div>
+
+        <p><strong>Windows用户：</strong></p>
+        <div class="code-block">
+          # 使用Chocolatey安装
+          choco install flutter
+
+          # 或下载SDK
+          # https://flutter.dev/docs/get-started/install/windows
+        </div>
+
+        <p><strong>Linux用户：</strong></p>
+        <div class="code-block">
+          # 下载并解压
+          wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.6-stable.tar.xz
+          tar xf flutter_linux_3.19.6-stable.tar.xz
+          sudo mv flutter /usr/local/bin/
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function checkFlutter() {
+        const statusDiv = document.getElementById('flutter-status');
+        statusDiv.innerHTML = '<span class="loading"></span><span>检测中...</span>';
+
+        // 模拟检测过程
+        setTimeout(() => {
+          // 这里可以添加实际的Flutter检测逻辑
+          statusDiv.innerHTML = '<span class="warning">⚠️ 请在命令行中运行: flutter --version</span>';
+        }, 1000);
+      }
+
+      function showInstructions() {
+        const instructions = document.getElementById('instructions');
+        instructions.style.display = instructions.style.display === 'none' ? 'block' : 'none';
+      }
+
+      // 页面加载时自动检测
+      window.onload = function() {
+        checkFlutter();
+      };
+    </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师个人工作台 - 教研网</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            font-family: 'PingFang SC', sans-serif;
+        }
+
+        .hover-zoom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.05);
+        }
+
+        .info-gradient {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 100%);
+        }
+
+        /* 交互缩放效果 */
+        .hover-zoom {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-zoom:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+            z-index: 10;
+        }
+
+        /* 悬浮 AI 助手 */
+        .ai-floating-dock {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            z-index: 1000;
+            padding: 14px 22px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-tag {
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .agent-tag.active {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* 全部应用弹窗动画 */
+        #allAppsModal {
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #allAppsModal.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .recommend-card {
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+            transition: all 0.3s;
+            border: 1px solid #eef2f6;
+        }
+
+        .recommend-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Settings Modal */
+        #settingsModal {
+            transition: all 0.2s ease-out;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #settingsModal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body class="pb-60">
+
+    <!-- 1. 全局顶部导航 -->
+    <header class="bg-white border-b sticky top-0 z-[100] px-24 py-2.5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-5">
+            <span class="text-blue-700 font-bold text-lg border-r pr-5 italic" data-i18n="header.title">睿云教育学院</span>
+            <nav class="flex gap-6 text-[16px] text-slate-500 font-medium items-center">
+                <a href="#" class="hover:text-blue-600 transition" data-i18n="header.home">首页</a>
+
+                <!-- Drodown: 循证教研 -->
+                <div class="relative group py-2">
+                    <a href="#" class="hover:text-blue-600 transition flex items-center gap-1"><span
+                            data-i18n="header.research">循证教研</span> <i
+                            class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-blue-600"></i></a>
+                    <div
+                        class="absolute left-0 top-full mt-0 w-36 bg-white border border-slate-100 shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden flex flex-col py-1">
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.prepare">AI备课助手</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.resource">校本资源</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.schedule">排课录课</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.observe">观察分析</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.evaluate">评课研究</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.activity">教研活动</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.group">教研组</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.studio">名师工作室</a>
+                    </div>
+                </div>
+
+                <!-- Dropdown: 作业平台 -->
+                <div class="relative group py-2">
+                    <a href="#" class="hover:text-blue-600 transition flex items-center gap-1"><span
+                            data-i18n="header.homework">作业中心</span> <i
+                            class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-blue-600"></i></a>
+                    <div
+                        class="absolute left-0 top-full mt-0 w-36 bg-white border border-slate-100 shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden flex flex-col py-1">
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.design">AI作业设计</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.manage">作业管理</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.analysis">AI学情分析</a>
+                    </div>
+                </div>
+
+                <!-- Dropdown: 课程平台 -->
+                <div class="relative group py-2">
+                    <a href="#" class="hover:text-blue-600 transition flex items-center gap-1"><span
+                            data-i18n="header.course">课程平台</span> <i
+                            class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-blue-600"></i></a>
+                    <div
+                        class="absolute left-0 top-full mt-0 w-36 bg-white border border-slate-100 shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden flex flex-col py-1">
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.aicourse">AI
+                            课程</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.steam">STEAM
+                            课程</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.ailms">AI
+                            LMS</a>
+                    </div>
+                </div>
+
+                <!-- Dropdown: 教师培训 -->
+                <div class="relative group py-2">
+                    <a href="#" class="hover:text-blue-600 transition flex items-center gap-1"><span
+                            data-i18n="header.training">教师培训</span> <i
+                            class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-blue-600"></i></a>
+                    <div
+                        class="absolute left-0 top-full mt-0 w-36 bg-white border border-slate-100 shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden flex flex-col py-1">
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.schooltrain">校本研修</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.areatrain">区域研修</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.selftrain">自主选学</a>
+                    </div>
+                </div>
+
+                <!-- Dropdown: 教育科研 -->
+                <div class="relative group py-2">
+                    <a href="#" class="hover:text-blue-600 transition flex items-center gap-1"><span
+                            data-i18n="header.science">教育科研</span> <i
+                            class="fas fa-chevron-down text-[10px] text-slate-400 group-hover:text-blue-600"></i></a>
+                    <div
+                        class="absolute left-0 top-full mt-0 w-36 bg-white border border-slate-100 shadow-lg rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden flex flex-col py-1">
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.topic">课题研究</a>
+                        <a href="#"
+                            class="block px-4 py-2 text-[14px] text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                            data-i18n="nav.result">成果培育</a>
+                    </div>
+                </div>
+
+                <!-- Active Item -->
+                <a href="#" class="text-blue-600 font-bold border-b-2 border-blue-600 pb-0.5 flex items-center gap-1"><i
+                        class="fas fa-sparkles text-xs"></i><span data-i18n="header.assistant">AI 助手</span></a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition"
+            onclick="toggleSettings(true)">
+            <span class="text-[16px] font-bold text-slate-600" data-i18n="header.user">张老师</span>
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                class="w-7 h-7 rounded-full border bg-slate-100">
+        </div>
+    </header>
+
+    <div class="max-w-[1600px] mx-auto mt-5 px-24">
+
+        <!-- 2. 三栏结构布局 -->
+        <div class="grid grid-cols-12 gap-5 items-stretch">
+            <aside class="col-span-3">
+                <div class="glass-card p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-[18px]"><i
+                                class="fas fa-calendar-alt text-blue-500 text-base"></i> <span
+                                data-i18n="sidebar.title">工作日程</span></h3>
+                        <span class="bg-red-50 text-red-500 text-[12px] px-2 py-0.5 rounded-full font-bold"
+                            data-i18n="sidebar.pending">3条待处理</span>
+                    </div>
+                    <div class="bg-slate-50/80 p-3 rounded-2xl mb-3 border border-slate-100">
+                        <div class="flex justify-between items-center text-[13px] font-bold text-slate-400 mb-4 px-1">
+                            <span data-i18n="sidebar.month">2026年1月</span>
+                            <div class="flex gap-3 text-slate-300"><i class="fas fa-chevron-left"></i><i
+                                    class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="grid grid-cols-7 text-center text-sm gap-y-4 font-medium">
+                            <span class="text-slate-200">29</span><span class="text-slate-200">30</span><span
+                                class="text-slate-200">31</span>
+                            <span>1</span><span>2</span><span class="text-blue-600 font-bold">3</span><span>4</span>
+                            <span>5</span><span>6</span>
+                            <div class="flex flex-col items-center"><span
+                                    class="bg-blue-600 text-white w-7 h-8 flex items-center justify-center rounded-lg font-bold shadow-md">7</span>
+                            </div>
+                            <div class="flex flex-col items-center relative"><span>8</span><span
+                                    class="absolute -bottom-1 w-1 h-1 bg-red-500 rounded-full"></span></div>
+                            <span>9</span><span>10</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4 flex-1 relative ml-1">
+                        <div class="absolute left-[5.5px] top-2 bottom-2 w-[1px] bg-slate-100"></div>
+                        <div class="relative pl-6">
+                            <div class="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-blue-500 border-2 border-white">
+                            </div>
+                            <div class="flex justify-between mb-1"><span class="text-sm font-bold text-blue-600"
+                                    data-i18n="sidebar.event1">教研活动</span><span class="text-[12px] text-slate-400"
+                                    data-i18n="sidebar.time1">14:00</span></div>
+                            <p class="text-[13px] text-slate-600" data-i18n="sidebar.event1desc">参加“英语语法”教研研讨</p>
+                        </div>
+                        <div class="relative pl-6">
+                            <div class="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-blue-500 border-2 border-white">
+                            </div>
+                            <div class="flex justify-between mb-1"><span class="text-sm font-bold text-blue-600"
+                                    data-i18n="sidebar.event2">课程开讲</span><span class="text-[12px] text-slate-400"
+                                    data-i18n="sidebar.time2">明日 08:00</span></div>
+                            <p class="text-[13px] text-slate-600" data-i18n="sidebar.event2desc">初二(3)班 英语听说</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="col-span-6">
+                <div class="glass-card p-4 flex flex-col gap-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-[18px]"><i
+                                class="fas fa-th-large text-blue-600 text-base"></i> <span
+                                data-i18n="apps.title">我的应用</span></h3>
+                        <button onclick="toggleModal(true)"
+                            class="text-[16px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group"><span
+                                data-i18n="apps.all">全部</span>
+                            <i
+                                class="fas fa-arrow-right-from-bracket rotate-90 text-[12px] group-hover:translate-x-0.5 transition-transform"></i></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="border rounded-2xl overflow-hidden flex flex-col h-[180px]">
+                            <div class="p-3 bg-blue-50/50 flex justify-between items-center border-b border-blue-100">
+                                <span class="font-bold text-blue-800 text-[16px]"><i
+                                        class="fas fa-pen-nib mr-1.5 text-sm"></i> <span data-i18n="apps.design">AI
+                                        作业设计</span></span>
+                                <span class="text-[12px] text-blue-500 font-bold">42<span
+                                        data-i18n="myapps.unit">个</span></span>
+                            </div>
+                            <div class="p-3 flex flex-col gap-2 flex-1 justify-center">
+                                <div
+                                    class="p-2.5 border-2 border-dashed border-blue-100 rounded-xl text-center text-[14px] text-blue-600 hover:bg-blue-50 transition cursor-pointer font-bold">
+                                    <i class="fas fa-upload mr-1.5 text-sm"></i> <span
+                                        data-i18n="apps.upload">上传作业分析</span>
+                                </div>
+                                <div
+                                    class="p-2.5 border-2 border-dashed border-slate-200 rounded-xl text-center text-[14px] text-slate-400 hover:bg-slate-50 transition cursor-pointer font-bold">
+                                    <i class="fas fa-wand-magic-sparkles mr-1.5 text-sm"></i> <span
+                                        data-i18n="apps.oneclick">一键作业设计</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border rounded-2xl overflow-hidden flex flex-col h-[180px]">
+                            <div class="p-3 bg-blue-50/50 flex justify-between items-center border-b border-blue-100">
+                                <span class="font-bold text-blue-800 text-[16px]"><i
+                                        class="fas fa-magic mr-1.5 text-sm"></i> <span data-i18n="apps.prep">AI
+                                        备课</span></span>
+                                <span class="text-[12px] text-blue-500 font-bold">156<span
+                                        data-i18n="myapps.unit">个</span></span>
+                            </div>
+                            <div class="p-3 flex flex-col gap-2 flex-1 justify-center">
+                                <div
+                                    class="p-2.5 border-2 border-dashed border-blue-100 rounded-xl text-center text-[14px] text-blue-600 hover:bg-blue-50 transition cursor-pointer font-bold">
+                                    <i class="fas fa-file-pen mr-1.5 text-sm"></i> <span
+                                        data-i18n="apps.generate">生成教学设计</span>
+                                </div>
+                                <div
+                                    class="p-2.5 border-2 border-dashed border-slate-200 rounded-xl text-center text-[14px] text-slate-400 hover:bg-slate-50 transition cursor-pointer font-bold">
+                                    <i class="fas fa-magnifying-glass-chart mr-1.5 text-sm"></i> <span
+                                        data-i18n="apps.create">素材创生</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div
+                            class="border rounded-xl p-2 text-center border-t-4 border-t-blue-200 hover:shadow-md transition cursor-pointer">
+                            <p class="text-[16px] text-blue-800 font-bold mb-0.5"><i
+                                    class="fas fa-chart-line mr-1.5 text-sm"></i><span
+                                    data-i18n="myapps.analysis">我的课堂分析</span></p>
+                            <div class="flex justify-center gap-2 items-baseline"><span
+                                    class="text-[14px] font-bold text-slate-500">12 <span
+                                        data-i18n="myapps.unit_fen">份</span></span><span
+                                    class="text-[11px] text-red-500 font-bold">3 <span
+                                        data-i18n="myapps.new">新生成</span></span></div>
+                        </div>
+                        <div
+                            class="border rounded-xl p-2 text-center border-t-4 border-t-blue-200 hover:shadow-md transition cursor-pointer">
+                            <p class="text-[16px] text-blue-800 font-bold mb-0.5"><i
+                                    class="fas fa-clipboard-check mr-1.5 text-sm"></i><span
+                                    data-i18n="myapps.evaluate">我的听评课</span></p>
+                            <div class="flex justify-center gap-2 items-baseline"><span
+                                    class="text-[14px] font-bold text-slate-500">30 <span
+                                        data-i18n="myapps.unit">个</span></span><span
+                                    class="text-[11px] text-red-500 font-bold">2 <span
+                                        data-i18n="myapps.pending">待进行</span></span></div>
+                        </div>
+                        <div
+                            class="border rounded-xl p-2 text-center border-t-4 border-t-blue-200 hover:shadow-md transition cursor-pointer">
+                            <p class="text-[16px] text-blue-800 font-bold mb-0.5"><i
+                                    class="fas fa-chalkboard-user mr-1.5 text-sm"></i><span
+                                    data-i18n="myapps.train">我的培训</span></p>
+                            <div class="flex justify-center gap-2 items-baseline"><span
+                                    class="text-[14px] font-bold text-slate-500"> 19 <span
+                                        data-i18n="myapps.unit">个</span></span><span
+                                    class="text-[11px] text-red-500 font-bold"></span></div>
+                        </div>
+                        <div
+                            class="border rounded-xl p-2 text-center border-t-4 border-t-blue-200 hover:shadow-md transition cursor-pointer">
+                            <p class="text-[16px] text-blue-800 font-bold mb-0.5"><i
+                                    class="fas fa-laptop-code mr-1.5 text-sm"></i><span data-i18n="myapps.course">我的
+                                    AI课程</span></p>
+                            <div class="flex justify-center gap-2 items-baseline"><span
+                                    class="text-[14px] font-bold text-slate-500">20<span
+                                        data-i18n="myapps.unit_jie">节</span></span><span
+                                    class="text-[11px] text-red-500 font-bold">1 <span
+                                        data-i18n="myapps.pending">待进行</span></span></div>
+                        </div>
+                        <div
+                            class="border rounded-xl p-2 text-center border-t-4 border-t-blue-200 hover:shadow-md transition cursor-pointer">
+                            <p class="text-[16px] text-blue-800 font-bold mb-0.5"><i
+                                    class="fas fa-folder-open mr-1.5 text-sm"></i><span
+                                    data-i18n="myapps.resource">我的资源库</span></p>
+                            <div class="flex justify-center gap-2 items-baseline"><span
+                                    class="text-[14px] font-bold text-slate-500">128 <span
+                                        data-i18n="myapps.unit_fen">份</span></span><span
+                                    class="text-[11px] text-red-500 font-bold"></span></div>
+                        </div>
+                        <div
+                            class="border rounded-xl p-2 text-center border-t-4 border-t-blue-200 hover:shadow-md transition cursor-pointer">
+                            <p class="text-[16px] text-blue-800 font-bold mb-0.5"><i
+                                    class="fas fa-trophy mr-1.5 text-sm"></i>我的赛事</p>
+                            <div class="flex justify-center gap-2 items-baseline"><span
+                                    class="text-[14px] font-bold text-slate-500">2 场</span><span
+                                    class="text-[11px] text-red-500 font-bold">1 报名中</span></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="col-span-3">
+                <div
+                    class="glass-card info-gradient relative h-[420px] overflow-hidden flex items-center justify-center">
+                    <!-- Background Decoration -->
+                    <div
+                        class="absolute inset-0 bg-[url('https://img.freepik.com/free-vector/gradient-technological-background_23-2148884155.jpg')] bg-cover bg-center opacity-10">
+                    </div>
+                    <div
+                        class="absolute w-56 h-56 border border-blue-200/20 rounded-full animate-[spin_10s_linear_infinite]">
+                    </div>
+                    <div
+                        class="absolute w-40 h-40 border border-blue-300/30 rounded-full animate-[spin_15s_linear_infinite_reverse]">
+                    </div>
+
+                    <!-- Avatar Center (moved up) -->
+                    <div
+                        class="relative z-10 w-28 h-28 rounded-full p-1 bg-gradient-to-b from-blue-400 to-indigo-600 shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center -mt-8">
+                        <div
+                            class="w-full h-full rounded-full bg-blue-400 overflow-hidden border-4 border-white/50 flex items-center justify-center">
+                            <i class="fas fa-user text-4xl text-white/90"></i>
+                        </div>
+                        <!-- Name Tag below avatar -->
+                        <div class="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-center">
+                            <h2 class="text-lg font-bold text-slate-800 shadow-sm" data-i18n="profile.avatar">张老师</h2>
+                        </div>
+                    </div>
+
+                    <!-- Floating Cards (reduced positions) -->
+                    <!-- Top Left: Teaching Age -->
+                    <div
+                        class="absolute top-16 left-12 bg-white/90 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/50 animate-[float_3s_ease-in-out_infinite] text-center">
+                        <p class="text-[9px] text-slate-400 mb-0.5" data-i18n="profile.age">教龄</p>
+                        <p class="text-[13px] font-bold text-slate-800" data-i18n="profile.age_val">12 年</p>
+                    </div>
+
+                    <!-- Top Right: Title -->
+                    <div
+                        class="absolute top-14 right-14 bg-white/90 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/50 animate-[float_4s_ease-in-out_infinite_1s] text-center">
+                        <p class="text-[9px] text-slate-400 mb-0.5" data-i18n="profile.title">职称</p>
+                        <p class="text-[13px] font-bold text-slate-800" data-i18n="profile.title_val">高级教师</p>
+                    </div>
+
+                    <!-- Right Middle: School -->
+                    <div
+                        class="absolute top-[45%] right-2 -translate-y-1/2 bg-blue-500/90 backdrop-blur-md p-2.5 rounded-xl shadow-lg border border-blue-300/50 animate-[float_5s_ease-in-out_infinite_0.5s] z-20 text-center">
+                        <p class="text-[9px] text-blue-100 mb-0.5" data-i18n="profile.school">任职单位</p>
+                        <p class="text-[13px] font-bold text-white" data-i18n="profile.school_val">睿云学院</p>
+                    </div>
+
+                    <!-- Bottom Right: Stage -->
+                    <div
+                        class="absolute bottom-24 right-12 bg-white/90 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/50 animate-[float_3.5s_ease-in-out_infinite_1.5s] text-center">
+                        <p class="text-[9px] text-slate-400 mb-0.5" data-i18n="profile.stage">任教学段</p>
+                        <p class="text-[13px] font-bold text-slate-800" data-i18n="profile.stage_val">初中英语</p>
+                    </div>
+
+                    <!-- Bottom Left: Politics -->
+                    <div
+                        class="absolute bottom-20 left-14 bg-white/90 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/50 animate-[float_4.5s_ease-in-out_infinite_2s] text-center">
+                        <p class="text-[9px] text-slate-400 mb-0.5" data-i18n="profile.poli">政治面貌</p>
+                        <p class="text-[13px] font-bold text-slate-800" data-i18n="profile.poli_val">党员</p>
+                    </div>
+
+                    <!-- Left Middle: Graduated -->
+                    <div
+                        class="absolute top-[45%] left-8 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/50 animate-[float_3.8s_ease-in-out_infinite_0.8s] text-center">
+                        <p class="text-[9px] text-slate-400 mb-0.5" data-i18n="profile.grad">毕业院校</p>
+                        <p class="text-[13px] font-bold text-slate-800" data-i18n="profile.grad_val">北师大</p>
+                    </div>
+
+                    <!-- Bottom Buttons -->
+                    <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-3 px-4">
+                        <button
+                            class="flex-1 py-2 bg-white/90 backdrop-blur-md rounded-xl text-[13px] font-bold text-blue-600 hover:bg-white hover:shadow-lg transition border border-white/50">
+                            <i class="fas fa-user-chart mr-1.5"></i><span data-i18n="profile.btn1">综合画像</span>
+                        </button>
+                        <button
+                            class="flex-1 py-2 bg-white/90 backdrop-blur-md rounded-xl text-[13px] font-bold text-blue-600 hover:bg-white hover:shadow-lg transition border border-white/50">
+                            <i class="fas fa-folder-tree mr-1.5"></i><span data-i18n="profile.btn2">成长档案</span>
+                        </button>
+                    </div>
+
+                </div>
+            </aside>
+        </div>
+
+        <!-- 3. 能力画像与 AI 深度诊断建议 (更新交互与整体分析) -->
+        <section class="glass-card p-6 mt-5">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2 text-[18px] border-l-4 border-indigo-600 pl-3"
+                    data-i18n="analysis.title">
+                    AI 助手分析建议</h3>
+                <div class="flex gap-3">
+                    <button
+                        class="px-5 py-2.5 bg-indigo-50 text-indigo-600 rounded-lg text-[16px] font-bold hover:bg-indigo-100 transition flex items-center gap-1.5">
+                        <i class="fas fa-route text-[14px]"></i> <span data-i18n="analysis.btn1">成长路径</span>
+                    </button>
+                    <button
+                        class="px-5 py-2.5 bg-blue-50 text-blue-600 rounded-lg text-[16px] font-bold hover:bg-blue-100 transition flex items-center gap-1.5">
+                        <i class="fas fa-chart-line text-[14px]"></i> <span data-i18n="analysis.btn2">进阶分析</span>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-12 gap-6 items-stretch">
+                <!-- 左侧雷达图 -->
+                <!-- 左侧雷达图 (Expanded to 5 columns) -->
+                <div class="col-span-5 grid grid-cols-2 gap-3 border-r border-slate-100 pr-6">
+                    <div class="text-center">
+                        <p class="text-[13px] font-bold text-blue-500 mb-3 tracking-tight" data-i18n="analysis.radar1">
+                            教学效能数据</p><canvas id="teachRadar" height="260"></canvas>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[13px] font-bold text-blue-500 mb-3 tracking-tight" data-i18n="analysis.radar2">
+                            科研能力数据</p><canvas id="researchRadar" height="260"></canvas>
+                    </div>
+                </div>
+                <!-- 右侧诊断报告内容 (Reduced to 7 columns) -->
+                <div class="col-span-7 flex flex-col">
+                    <!-- 头部标题 -->
+
+
+                    <!-- 【新增】教师整体 AI 分析区域 -->
+                    <!-- 【新增】教师整体 AI 分析区域 -->
+                    <div class="mb-4 p-4 pl-0 cursor-default -mt-2">
+                        <div class="flex items-center gap-2 mb-2 text-[#1e40af]">
+                            <i class="fas fa-chart-line text-base"></i>
+                            <span class="text-[17px] font-bold" data-i18n="analysis.main_title">AI 助手整体分析建议</span>
+                        </div>
+                        <p class="text-slate-600 text-[14px] leading-relaxed text-justify" id="mainAnalysisDesc">
+                            基于近三个月的教学行为数据，您的 AI 赋能教学指数持续上升，尤其在 <span class="font-bold">资源整合</span> 与
+                            <span class="font-bold">课件创新</span> 维度表现卓越，超越了 <span class="font-bold">92%</span> 的同行。AI
+                            助手建议您下一阶段重点关注 <a href="javascript:void(0)"
+                                onclick="document.getElementById('aiChatModal').classList.remove('hidden'); document.getElementById('aiFloatingDock').style.display='none';"
+                                class="font-bold text-blue-700 underline decoration-2 underline-offset-4 cursor-pointer hover:text-indigo-800">差异化教学</a>，利用智能学情分析工具，精准定位每位学生的最近发展区，实现因材施教的深度突破。此外，数据显示您的课堂互动频次在近期有显著提升，但深度互动比例仍有优化空间，建议结合
+                            AI 课堂观察工具进行专项诊断，进一步提升学生思维参与度。
+                        </p>
+                    </div>
+
+                    <!-- 两组建议卡片 -->
+                    <div class="grid grid-cols-2 gap-4 h-full">
+                        <!-- 教学提升建议 -->
+                        <div
+                            class="bg-blue-50/30 p-5 rounded-2xl border border-blue-100 flex flex-col justify-center hover-zoom">
+                            <b class="text-blue-700 block mb-3 text-[17px] font-extrabold tracking-wide"
+                                data-i18n="analysis.card1_title">教学提升建议</b>
+                            <p class="text-slate-600 text-[14px] leading-[1.75] text-justify" id="card1Desc">
+                                数据监测显示，本月班级在 <span class="font-bold">"英语听说"</span> 模块的互动率较上月提升 <span
+                                    class="font-bold">15%</span>，但在 <span class="font-bold">"复杂句式"</span>
+                                掌握度上仍有待加强。建议针对薄弱点一键生成 <a href="javascript:void(0)" id="homeworkAssistantLink"
+                                    onclick="document.getElementById('homeworkModal').classList.remove('hidden'); document.getElementById('aiFloatingDock').style.display='none';"
+                                    class="font-bold text-blue-700 underline decoration-2 underline-offset-4 cursor-pointer hover:text-indigo-800">巩固作业</a>。
+                            </p>
+                        </div>
+                        <!-- 科研提升 -->
+                        <div
+                            class="bg-blue-50/30 p-5 rounded-2xl border border-blue-100 flex flex-col justify-center hover-zoom">
+                            <b class="text-blue-700 block mb-3 text-[17px] font-extrabold tracking-wide"
+                                data-i18n="analysis.card2_title">科研提升建议</b>
+                            <p class="text-slate-600 text-[14px] leading-[1.75] text-justify" id="card2Desc">
+                                您的数字化教学资产库已已初具规模。AI 分析发现您的教学实践在 <span class="font-bold">"跨学科融合"</span>
+                                领域颇具价值。建议利用 <a href="javascript:void(0)"
+                                    onclick="document.getElementById('thesisModal').classList.remove('hidden'); document.getElementById('aiFloatingDock').style.display='none';"
+                                    class="font-bold text-blue-700 underline decoration-2 underline-offset-4 cursor-pointer hover:text-indigo-800">论文助手</a>
+                                将特色课例转化为教研课题申报书。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thesis Assistant Modal -->
+        <div id="thesisModal" class="hidden fixed inset-0 z-[999]">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+                onclick="document.getElementById('thesisModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';">
+            </div>
+
+            <!-- Modal Content -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] bg-white rounded-2xl shadow-2xl animate-[float_0.3s_ease-out]">
+                <!-- Header -->
+                <div
+                    class="p-5 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-2xl">
+                    <div class="flex items-center gap-2 text-white">
+                        <i class="fas fa-robot text-xl"></i>
+                        <h3 class="text-lg font-bold" data-i18n="modals.thesis.title">AI 论文助手</h3>
+                    </div>
+                    <button
+                        onclick="document.getElementById('thesisModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';"
+                        class="text-white/80 hover:text-white transition">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="p-6">
+                    <p class="text-slate-600 mb-4 font-medium" data-i18n="modals.thesis.choose">请选择您要生成论文的课例：</p>
+
+                    <div class="space-y-3">
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 cursor-pointer transition group">
+                            <input type="radio" name="lessonCase"
+                                class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-indigo-800"
+                                    data-i18n="modals.thesis.case1">Unit 3 What were you
+                                    doing...</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.thesis.case1desc">初中英语 ·
+                                    八年级下册</p>
+                            </div>
+                        </label>
+
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 cursor-pointer transition group">
+                            <input type="radio" name="lessonCase"
+                                class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-indigo-800"
+                                    data-i18n="modals.thesis.case2">古诗鉴赏：静夜思</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.thesis.case2desc">小学语文 ·
+                                    一年级上册</p>
+                            </div>
+                        </label>
+
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 cursor-pointer transition group">
+                            <input type="radio" name="lessonCase"
+                                class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-indigo-800"
+                                    data-i18n="modals.thesis.case3">勾股定理的证明与应用</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.thesis.case3desc">初中数学 ·
+                                    八年级上册</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="mt-6 flex justify-end gap-3">
+                        <button
+                            onclick="document.getElementById('thesisModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';"
+                            class="px-5 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition">取消</button>
+                        <button
+                            class="px-5 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i> <span
+                                data-i18n="modals.thesis.confirm">生成课题论文</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Homework Assistant Modal -->
+        <div id="homeworkModal" class="hidden fixed inset-0 z-[999]">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+                onclick="document.getElementById('homeworkModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';">
+            </div>
+
+            <!-- Modal Content -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] bg-white rounded-2xl shadow-2xl animate-[float_0.3s_ease-out]">
+                <!-- Header -->
+                <div
+                    class="p-5 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-blue-500 to-cyan-500 rounded-t-2xl">
+                    <div class="flex items-center gap-2 text-white">
+                        <i class="fas fa-pen-to-square text-xl"></i>
+                        <h3 class="text-lg font-bold" data-i18n="modals.homework.title">AI 作业助手</h3>
+                    </div>
+                    <button
+                        onclick="document.getElementById('homeworkModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';"
+                        class="text-white/80 hover:text-white transition">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="p-6">
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-5">
+                        <div class="flex items-center gap-2 text-blue-700 mb-2">
+                            <i class="fas fa-lightbulb"></i>
+                            <span class="font-bold" data-i18n="modals.homework.diag">智能诊断结果</span>
+                        </div>
+                        <p class="text-slate-600 text-[14px]" id="homeworkDiagDesc">根据AI分析，您的班级在 <span
+                                class="font-bold text-blue-600">"复杂句式"</span> 方面的掌握度为 <span
+                                class="font-bold text-orange-500">68%</span>，建议生成针对性巩固作业。</p>
+                    </div>
+
+                    <p class="text-slate-600 mb-3 font-medium" data-i18n="modals.homework.select">请选择作业类型：</p>
+
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-blue-50 hover:border-blue-200 cursor-pointer transition group">
+                            <input type="radio" name="homeworkType" checked
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-blue-800"
+                                    data-i18n="modals.homework.t1">基础巩固</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.homework.t1d">适合大部分学生</p>
+                            </div>
+                        </label>
+
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-blue-50 hover:border-blue-200 cursor-pointer transition group">
+                            <input type="radio" name="homeworkType"
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-blue-800"
+                                    data-i18n="modals.homework.t2">拓展提高</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.homework.t2d">适合优秀学生</p>
+                            </div>
+                        </label>
+
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-blue-50 hover:border-blue-200 cursor-pointer transition group">
+                            <input type="radio" name="homeworkType"
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-blue-800"
+                                    data-i18n="modals.homework.t3">分层练习</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.homework.t3d">按能力分的组</p>
+                            </div>
+                        </label>
+
+                        <label
+                            class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl hover:bg-blue-50 hover:border-blue-200 cursor-pointer transition group">
+                            <input type="radio" name="homeworkType"
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <div>
+                                <p class="font-bold text-slate-700 group-hover:text-blue-800"
+                                    data-i18n="modals.homework.t4">错题巩固</p>
+                                <p class="text-xs text-slate-400 mt-0.5" data-i18n="modals.homework.t4d">基于历史错题</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button
+                            onclick="document.getElementById('homeworkModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';"
+                            class="px-5 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-100 transition">取消</button>
+                        <button
+                            class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-lg shadow-blue-200 transition flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i> <span
+                                data-i18n="modals.homework.confirm">生成巩固作业</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Chat Modal for Differentiated Teaching -->
+        <div id="aiChatModal" class="hidden fixed inset-0 z-[999]">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+                onclick="document.getElementById('aiChatModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';">
+            </div>
+
+            <!-- Modal Content -->
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+                <!-- Header -->
+                <div
+                    class="p-4 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-indigo-500 to-purple-500">
+                    <div class="flex items-center gap-2 text-white">
+                        <i class="fas fa-robot text-xl"></i>
+                        <h3 class="text-lg font-bold" data-i18n="modals.chat.title">AI 教学助手</h3>
+                        <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full"
+                            data-i18n="modals.chat.subtitle">差异化教学专题</span>
+                    </div>
+                    <button
+                        onclick="document.getElementById('aiChatModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';"
+                        class="text-white/80 hover:text-white transition">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Chat Body -->
+                <div class="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-4">
+                    <!-- User Question -->
+                    <div class="flex justify-end">
+                        <div class="max-w-[80%] bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-sm shadow">
+                            <p class="text-[14px]" data-i18n="modals.chat.q">应该怎么进行差异化教学？</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Response -->
+                    <div class="flex justify-start gap-2">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="max-w-[85%] bg-white p-4 rounded-2xl rounded-tl-sm shadow border border-slate-100">
+                            <p class="text-[14px] text-slate-700 leading-relaxed mb-3">
+                                <span data-i18n="modals.chat.a_intro">您好，张老师！根据您的教学数据分析，我为您提供以下差异化教学建议：</span>
+                            </p>
+                            <div class="space-y-2 text-[13px] text-slate-600">
+                                <div class="flex gap-2">
+                                    <span class="text-indigo-500 font-bold">1.</span>
+                                    <span><strong><span data-i18n="modals.chat.a_1_t">学情诊断</span></strong>：<span
+                                            data-i18n="modals.chat.a_1_d">利用"AI学情分析"工具识别学生在"复杂句式"上的掌握差异</span></span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="text-indigo-500 font-bold">2.</span>
+                                    <span><strong><span data-i18n="modals.chat.a_2_t">分层任务</span></strong>：<span
+                                            data-i18n="modals.chat.a_2_d">设计A/B/C三级难度的课堂任务，让不同层次学生都有成就感</span></span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="text-indigo-500 font-bold">3.</span>
+                                    <span><strong><span data-i18n="modals.chat.a_3_t">智能分组</span></strong>：<span
+                                            data-i18n="modals.chat.a_3_d">基于学情数据自动生成异质小组，促进同伴互助</span></span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="text-indigo-500 font-bold">4.</span>
+                                    <span><strong><span data-i18n="modals.chat.a_4_t">个性作业</span></strong>：<span
+                                            data-i18n="modals.chat.a_4_d">为不同层次学生推送适配的巩固练习</span></span>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-slate-100">
+                                <p class="text-[12px] text-slate-400" data-i18n="modals.chat.tip">点击下方按钮快速开始 ↓</p>
+                            </div>
+                            <div class="flex gap-2 mt-2">
+                                <button
+                                    class="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[12px] font-medium hover:bg-indigo-100 transition">
+                                    <i class="fas fa-chart-pie mr-1"></i> <span
+                                        data-i18n="modals.chat.btn1">查看学情分析</span>
+                                </button>
+                                <button
+                                    class="px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg text-[12px] font-medium hover:bg-purple-100 transition">
+                                    <i class="fas fa-wand-magic-sparkles mr-1"></i> <span
+                                        data-i18n="modals.chat.btn2">生成分层任务</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 border-t border-slate-100 bg-white">
+                    <div class="relative flex items-center">
+                        <input type="text"
+                            class="w-full py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[14px] focus:border-indigo-500 pr-12"
+                            placeholder="继续提问..." data-i18n-placeholder="modals.chat.placeholder">
+                        <button
+                            class="absolute right-2 w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center hover:bg-indigo-700 transition">
+                            <i class="fas fa-paper-plane text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 智能体发现推荐 -->
+        <section class="mt-8">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                        <i class="fas fa-compass text-base"></i>
+                    </div>
+                    <div class="flex items-baseline gap-3">
+                        <h3 class="text-[18px] font-bold text-slate-800 tracking-tight" data-i18n="recommend.title">AI
+                            助手推荐</h3>
+                        <p class="text-[16px] text-slate-400 italic font-medium" data-i18n="recommend.subtitle">
+                            基于您的教学和科研情况推荐学习</p>
+                    </div>
+                </div>
+                <button
+                    class="px-5 py-2.5 bg-blue-50 text-blue-600 rounded-lg text-[16px] font-bold hover:bg-blue-100 transition flex items-center gap-1.5">
+                    <i class="fas fa-globe text-[14px]"></i> <span data-i18n="recommend.btn">精品资源</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-4 gap-5">
+                <div class="recommend-card border-b-4 border-blue-500 flex flex-col">
+                    <div class="relative group h-36"><img
+                            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=60"
+                            class="w-full h-full object-cover">
+                        <div
+                            class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                            <div
+                                class="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform">
+                                <i class="fas fa-play text-blue-600 text-lg ml-0.5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <h4 class="text-[16px] font-bold text-slate-800 leading-snug mb-3"
+                            data-i18n="recommend.c1_title">名师汇：2026年英语听说教学数字化研讨课例</h4>
+                        <div class="mt-auto flex justify-between items-center"><span
+                                class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[12px] font-bold rounded-full"
+                                data-i18n="recommend.c1_tag">课堂分析</span><span class="text-[12px] text-slate-400"
+                                data-i18n="recommend.c1_view">1250 次观看</span></div>
+                    </div>
+                </div>
+                <div class="recommend-card border-b-4 border-blue-500 p-4 flex flex-col">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                            <i class="fas fa-file-lines text-sm"></i>
+                        </div><span class="text-[12px] font-bold text-blue-600 uppercase tracking-wider"
+                            data-i18n="recommend.c2_tag">CNKI
+                            论文推送</span>
+                    </div>
+                    <h4 class="text-[16px] font-bold text-slate-800 leading-relaxed mb-3 italic"
+                        data-i18n="recommend.c2_title">
+                        《大语言模型在英语口语评价体系中的应用研究报告》
+                    </h4>
+                    <div class="mt-auto flex justify-between items-end"><span class="text-[12px] text-slate-400"
+                            data-i18n="recommend.c2_info">2025.12
+                            | 核心期刊</span><i class="fas fa-arrow-up-right-from-square text-[12px] text-slate-300"></i>
+                    </div>
+                </div>
+                <div class="recommend-card border-b-4 border-blue-500 p-4 flex flex-col">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600"><i
+                                class="fas fa-box-archive text-sm"></i></div><span
+                            class="text-[12px] font-bold text-blue-600 uppercase tracking-wider"
+                            data-i18n="recommend.c3_tag">优质校本资源</span>
+                    </div>
+                    <h4 class="text-[16px] font-bold text-slate-800 leading-relaxed mb-3"
+                        data-i18n="recommend.c3_title">九年级 Unit 5 全套情境化互动素材包</h4>
+                    <div class="mt-auto flex justify-between items-center"><span
+                            class="text-[12px] text-slate-500 font-medium"
+                            data-i18n="recommend.c3_author">李名师贡献</span><span class="text-[12px] text-slate-400"><i
+                                class="fas fa-download mr-1"></i> 452</span></div>
+                </div>
+                <div class="recommend-card border-b-4 border-blue-500 p-4 flex flex-col">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                            <i class="fas fa-lightbulb text-sm"></i>
+                        </div><span class="text-[12px] font-bold text-blue-600 uppercase tracking-wider"
+                            data-i18n="recommend.c4_tag">教学竞赛案例</span>
+                    </div>
+                    <h4 class="text-[16px] font-bold text-slate-800 leading-relaxed mb-3"
+                        data-i18n="recommend.c4_title">全国数字化转型教学技能大赛特等奖案例赏析</h4>
+                    <div class="mt-auto flex justify-between items-center"><span
+                            class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[12px] font-bold rounded-full"
+                            data-i18n="recommend.c4_tag2">优秀课件</span><span class="text-[12px] text-slate-400"
+                            data-i18n="recommend.c4_like">890 赞</span></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Personal Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-[1000] flex items-start justify-end p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/20 backdrop-blur-sm" onclick="toggleSettings(false)"></div>
+
+        <!-- Modal Panel -->
+        <div
+            class="relative mt-16 bg-white w-80 rounded-2xl shadow-2xl overflow-hidden animate-[slideIn_0.2s_ease-out]">
+            <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-700" data-i18n="settings.title">个人设置</h3>
+                <button onclick="toggleSettings(false)" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4 space-y-4">
+                <div
+                    class="flex justify-between items-center p-3 bg-white border border-slate-100 rounded-xl shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-700 text-sm" data-i18n="settings.language">语言设置</p>
+                            <p class="text-xs text-slate-400" data-i18n="settings.languageDesc">切换中英文界面</p>
+                        </div>
+                    </div>
+                    <!-- Toggle Switch -->
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="langToggle" class="sr-only peer"
+                            onchange="toggleLanguage(this.checked)">
+                        <div
+                            class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全部应用弹窗 (同前版) -->
+    <div id="allAppsModal"
+        class="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800" data-i18n="modals.allapps.title">全部教师应用</h2>
+                    <p class="text-[14px] text-slate-400 mt-1" data-i18n="modals.allapps.desc">按业务场景分类的所有数字化工具</p>
+                </div>
+                <button onclick="toggleModal(false)"
+                    class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition"><i
+                        class="fas fa-times text-lg"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto grid grid-cols-4 gap-6">
+                <div>
+                    <h4 class="font-bold text-blue-600 mb-3.5 flex items-center gap-2 text-[17px]"><i
+                            class="fas fa-chalkboard-teacher text-base"></i> <span
+                            data-i18n="modals.allapps.cat1">循证教研</span></h4>
+                    <ul class="space-y-2.5 text-[16px] text-slate-600">
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> AI 课堂分析</li>
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> 听评课</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-blue-600 mb-3.5 flex items-center gap-2 text-[17px]"><i
+                            class="fas fa-microscope text-base"></i>
+                        教研科研</h4>
+                    <ul class="space-y-2.5 text-[16px] text-slate-600">
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> 论文查重助手</li>
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> 课题申报模板</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-blue-600 mb-3.5 flex items-center gap-2 text-[17px]"><i
+                            class="fas fa-user-graduate text-base"></i> <span
+                            data-i18n="modals.allapps.cat3">研修培训</span></h4>
+                    <ul class="space-y-2.5 text-[16px] text-slate-600">
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> 校本研修</li>
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> 自主选学</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-blue-600 mb-3.5 flex items-center gap-2 text-[17px]"><i
+                            class="fas fa-cogs text-base"></i> ......
+                    </h4>
+                    <ul class="space-y-2.5 text-[16px] text-slate-600">
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> ...</li>
+                        <li class="hover:text-blue-600 cursor-pointer flex items-center gap-2"><i
+                                class="fas fa-circle text-[5px]"></i> ...</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="p-5 bg-slate-50 rounded-b-3xl border-t text-center">
+                <p class="text-[14px] text-slate-400 italic">更多应用正在接入中，敬请期待...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 助手 Dock -->
+    <div id="aiFloatingDock" class="ai-floating-dock">
+        <div class="flex gap-2.5 mb-3.5">
+            <div class="agent-tag active" data-i18n="modals.dock.tag1">教学改进小助手</div>
+            <div class="agent-tag" data-i18n="modals.dock.tag2">科研提升小助手</div>
+            <div class="agent-tag" data-i18n="modals.dock.tag3">课题申报小助手</div>
+        </div>
+        <div class="relative flex items-center">
+            <input type="text" id="dockInput" onkeypress="if(event.key === 'Enter') handleDockSubmit()"
+                class="w-full py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[16px] focus:border-blue-500"
+                placeholder="输入您的问题..." data-i18n-placeholder="modals.dock.placeholder">
+            <button onclick="handleDockSubmit()"
+                class="absolute right-2 w-9 h-9 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg hover:bg-blue-700 transition"><i
+                    class="fas fa-paper-plane text-sm"></i></button>
+        </div>
+    </div>
+
+    <!-- Global AI Chat Modal -->
+    <div id="globalChatModal" class="hidden fixed inset-0 z-[999]">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onclick="document.getElementById('globalChatModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';">
+        </div>
+
+        <!-- Modal Content -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <!-- Header -->
+            <div
+                class="p-4 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-600">
+                <div class="flex items-center gap-2 text-white">
+                    <i class="fas fa-robot text-xl"></i>
+                    <h3 class="text-lg font-bold" data-i18n="modals.global.title">AI 助手</h3>
+                </div>
+                <button
+                    onclick="document.getElementById('globalChatModal').classList.add('hidden'); document.getElementById('aiFloatingDock').style.display='';"
+                    class="text-white/80 hover:text-white transition">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Chat Body -->
+            <div class="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-4">
+                <!-- User Question -->
+                <div class="flex justify-end">
+                    <div class="max-w-[80%] bg-blue-600 text-white p-3 rounded-2xl rounded-tr-sm shadow">
+                        <p id="globalUserQuestion" class="text-[14px]"></p>
+                    </div>
+                </div>
+
+                <!-- AI Response -->
+                <div class="flex justify-start gap-2">
+                    <div
+                        class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="max-w-[85%] bg-white p-4 rounded-2xl rounded-tl-sm shadow border border-slate-100">
+                        <p class="text-[14px] text-slate-700 leading-relaxed" data-i18n="modals.global.static_a">
+                            您好！我是您的智能教学助手。关于您提到的问题，我正在为您分析相关教学数据和资源。作为您的专属 AI
+                            伙伴，我可以协助您进行学情分析、教学设计、资源推荐以及课题研究。如有更多具体需求，请随时告诉我。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 border-t border-slate-100 bg-white">
+                <div class="relative flex items-center">
+                    <input type="text"
+                        class="w-full py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[14px] focus:border-blue-500 pr-12"
+                        placeholder="继续提问..." data-i18n-placeholder="modals.global.placeholder">
+                    <button
+                        class="absolute right-2 w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition">
+                        <i class="fas fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translation Data
+        const transData = {
+            zh: {
+                header: { title: "睿云教育学院", home: "首页", research: "循证教研", homework: "作业中心", course: "课程平台", training: "教师培训", science: "教育科研", assistant: "AI 助手", user: "张老师" },
+                nav: {
+                    prepare: "AI备课助手", resource: "校本资源", schedule: "排课录课", observe: "观察分析", evaluate: "评课研究", activity: "教研活动", group: "教研组", studio: "名师工作室",
+                    design: "AI作业设计", manage: "作业管理", analysis: "AI学情分析",
+                    aicourse: "AI 课程", steam: "STEAM 课程", ailms: "AI LMS",
+                    schooltrain: "校本研修", areatrain: "区域研修", selftrain: "自主选学",
+                    topic: "课题研究", result: "成果培育"
+                },
+                sidebar: { title: "工作日程", pending: "3条待处理", month: "2026年1月", event1: "教研活动", event1desc: "参加“英语语法”教研研讨", event2: "课程开讲", event2desc: "初二(3)班 英语听说", time1: "14:00", time2: "明日 08:00" },
+                apps: { title: "我的应用", all: "全部", design: "AI 作业设计", prep: "AI 备课", upload: "上传作业分析", oneclick: "一键作业设计", generate: "生成教学设计", create: "素材创生" },
+                myapps: { analysis: "我的课堂分析", evaluate: "我的听评课", train: "我的培训", course: "我的 AI课程", resource: "我的资源库", match: "我的赛事", new: "新生成", pending: "待进行", doing: "报名中", unit: "个", unit_fen: "份", unit_jie: "节", unit_chang: "场" },
+                profile: { avatar: "张老师", age: "教龄", age_val: "12 年", title: "职称", title_val: "高级教师", school: "任职单位", school_val: "睿云学院", stage: "任教学段", stage_val: "初中英语", poli: "政治面貌", poli_val: "党员", grad: "毕业院校", grad_val: "北师大", btn1: "综合画像", btn2: "成长档案" },
+                analysis: {
+                    title: "AI 助手分析建议", btn1: "成长路径", btn2: "进阶分析", radar1: "教学效能数据", radar2: "科研能力数据",
+                    main_title: "AI 助手整体分析建议",
+                    main_desc: "基于近三个月的教学行为数据，您的 AI 赋能教学指数持续上升，尤其在 {strong1} 与 {strong2} 维度表现卓越，超越了 {strong3} 的同行。AI 助手建议您下一阶段重点关注 {link}，利用智能学情分析工具，精准定位每位学生的最近发展区，实现因材施教的深度突破。此外，数据显示您的课堂互动频次在近期有显著提升，但深度互动比例仍有优化空间，建议结合 AI 课堂观察工具进行专项诊断，进一步提升学生思维参与度。",
+                    link_diff: "差异化教学",
+                    strong1: "资源整合", strong2: "课件创新", strong3: "92%",
+                    card1_title: "教学提升建议",
+                    card1_desc: "数据监测显示，本月班级在 {strong1} 模块的互动率较上月提升 {strong2}，但在 {strong3} 掌握度上仍有待加强。建议针对薄弱点一键生成 {link}。",
+                    card1_s1: "\"英语听说\"", card1_s2: "15%", card1_s3: "\"复杂句式\"", link_hw: "巩固作业",
+                    card2_title: "科研提升建议",
+                    card2_desc: "您的数字化教学资产库已已初具规模。AI 分析发现您的教学实践在 {strong1} 领域颇具价值。建议利用 {link} 将特色课例转化为教研课题申报书。",
+                    card2_s1: "\"跨学科融合\"", link_thesis: "论文助手"
+                },
+                settings: { title: "个人设置", language: "语言设置", languageDesc: "切换中英文界面" },
+                modals: {
+                    allapps: { title: "全部教师应用", desc: "按业务场景分类的所有数字化工具", cat1: "循证教研", cat2: "作业中心", cat3: "研修培训", cat4: "教育科研" },
+                    dock: { tag1: "教学改进小助手", tag2: "科研提升小助手", tag3: "课题申报小助手", placeholder: "输入您的问题..." },
+                    global: { title: "AI 助手", static_q: "怎么改进", static_a: "您好！我是您的智能教学助手。关于您提到的问题，我正在为您分析相关教学数据和资源。作为您的专属 AI 伙伴，我可以协助您进行学情分析、教学设计、资源推荐以及课题研究。如有更多具体需求，请随时告诉我。", placeholder: "继续提问..." },
+                    thesis: { title: "AI 论文助手", choose: "请选择您要生成论文的课例：", case1: "Unit 3 What were you doing...", case1desc: "初中英语 · 八年级下册", case2: "古诗鉴赏：静夜思", case2desc: "小学语文 · 一年级上册", case3: "勾股定理的证明与应用", case3desc: "初中数学 · 八年级上册", cancel: "取消", confirm: "生成课题论文" },
+                    homework: { title: "AI 作业助手", diag: "智能诊断结果", diag_desc: "根据AI分析，您的班级在 {strong1} 方面的掌握度为 {strong2}，建议生成针对性巩固作业。", d_s1: "\"复杂句式\"", d_s2: "68%", select: "请选择作业类型：", t1: "基础巩固", t1d: "适合大部分学生", t2: "拓展提高", t2d: "适合优秀学生", t3: "分层练习", t3d: "按能力分的组", t4: "错题巩固", t4d: "基于历史错题", cancel: "取消", confirm: "生成巩固作业" },
+                    chat: { title: "AI 教学助手", subtitle: "差异化教学专题", q: "应该怎么进行差异化教学？", a_intro: "您好，张老师！根据您的教学数据分析，我为您提供以下差异化教学建议：", a_1_t: "学情诊断", a_1_d: "利用\"AI学情分析\"工具识别学生在\"复杂句式\"上的掌握差异", a_2_t: "分层任务", a_2_d: "设计A/B/C三级难度的课堂任务，让不同层次学生都有成就感", a_3_t: "智能分组", a_3_d: "基于学情数据自动生成异质小组，促进同伴互助", a_4_t: "个性作业", a_4_d: "为不同层次学生推送适配的巩固练习", tip: "点击下方按钮快速开始 ↓", btn1: "查看学情分析", btn2: "生成分层任务", placeholder: "继续提问..." }
+                },
+                charts: {
+                    teach: ['设计', '互动', '效能', '创新', '学情'],
+                    research: ['选题', '方法', '数据', '论证', '创新']
+                },
+                recommend: {
+                    title: "AI 助手推荐", subtitle: "基于您的教学和科研情况推荐学习", btn: "精品资源",
+                    c1_title: "名师汇：2026年英语听说教学数字化研讨课例", c1_tag: "课堂分析", c1_view: "1250 次观看",
+                    c2_tag: "CNKI 论文推送", c2_title: "《大语言模型在英语口语评价体系中的应用研究报告》", c2_info: "2025.12 | 核心期刊",
+                    c3_tag: "优质校本资源", c3_title: "九年级 Unit 5 全套情境化互动素材包", c3_author: "李名师贡献",
+                    c4_tag: "教学竞赛案例", c4_title: "全国数字化转型教学技能大赛特等奖案例赏析", c4_tag2: "优秀课件", c4_like: "890 赞"
+                }
+            },
+            en: {
+                header: { title: "Ruiyun Academy", home: "Home", research: "Evidence-based", homework: "Homework", course: "Course", training: "Training", science: "Research", assistant: "AI Assistant", user: "Teacher Zhang" },
+                nav: {
+                    prepare: "AI Prep", resource: "Resources", schedule: "Schedule", observe: "Observation", evaluate: "Evaluation", activity: "Activity", group: "Teaching Group", studio: "Master Studio",
+                    design: "AI Design", manage: "Management", analysis: "AI Analysis",
+                    aicourse: "AI Course", steam: "STEAM", ailms: "AI LMS",
+                    schooltrain: "School Training", areatrain: "Regional Training", selftrain: "Self-study",
+                    topic: "Project Research", result: "Outcome Cultivation"
+                },
+                sidebar: { title: "Schedule", pending: "3 Pending", month: "Jan 2026", event1: "Teaching Activity", event1desc: "English Grammar Workshop", event2: "Lecture Start", event2desc: "Class 3 Grade 8 English", time1: "14:00", time2: "Tomorrow 08:00" },
+                apps: { title: "My Apps", all: "All", design: "AI Homework", prep: "AI Prep", upload: "Upload Analysis", oneclick: "1-Click Design", generate: "Gen Design", create: "Gen Content" },
+                myapps: { analysis: "Analysis", evaluate: "Evaluation", train: "Training", course: "AI Course", resource: "Resources", match: "Competitions", new: "New", pending: "Pending", doing: "Enrolling", unit: "", unit_fen: "", unit_jie: "", unit_chang: "" },
+                profile: { avatar: "Teacher Zhang", age: "Exp", age_val: "12 Yrs", title: "Title", title_val: "Senior", school: "School", school_val: "Ruiyun", stage: "Stage", stage_val: "Middle English", poli: "Politics", poli_val: "Member", grad: "College", grad_val: "BNU", btn1: "Portrait", btn2: "Portfolio" },
+                analysis: {
+                    title: "AI Analysis & Suggestions", btn1: "Growth Path", btn2: "Adv Analysis", radar1: "Teaching Efficiency", radar2: "Research Capability",
+                    main_title: "Overall AI Analysis",
+                    main_desc: "Based on data from the last 3 months, your AI-enabled teaching index is rising, excelling in {strong1} and {strong2}, surpassing {strong3} of peers. AI suggests focusing on {link}, using intelligent analysis tools to locate students' ZPD for differentiated instruction. Interaction frequency has increased, but deep interaction needs optimization via AI observation tools.",
+                    link_diff: "Differentiated Teaching",
+                    strong1: "Resource Integration", strong2: "Courseware Innovation", strong3: "92%",
+                    card1_title: "Teaching Improvement",
+                    card1_desc: "Monitoring shows class interaction in {strong1} improved by {strong2}, but mastery of {strong3} needs strengthening. Suggest generating specific {link} for weak points.",
+                    card1_s1: "\"Speaking\"", card1_s2: "15%", card1_s3: "\"Complex Sentences\"", link_hw: "Consolidation Homework",
+                    card2_title: "Research Improvement",
+                    card2_desc: "Your digital asset library is taking shape. AI found your practice in {strong1} valuable. Suggest using {link} to turn case studies into research project proposals.",
+                    card2_s1: "\"Interdisciplinary\"", link_thesis: "Thesis Assistant"
+                },
+                settings: { title: "Settings", language: "Language", languageDesc: "Switch EN/CN Interface" },
+                modals: {
+                    allapps: { title: "All Applications", desc: "Digital tools classified by scenario", cat1: "Evidence-based", cat2: "Homework Center", cat3: "Training", cat4: "Research" },
+                    dock: { tag1: "Teaching Assistant", tag2: "Research Assistant", tag3: "Project Assistant", placeholder: "Ask anything..." },
+                    global: { title: "AI Assistant", static_q: "How to improve", static_a: "Hello! I am your intelligent teaching assistant. I am analyzing relevant teaching data and resources for you. As your exclusive AI partner, I can assist you with academic analysis, instructional design, resource recommendation, and project research. Please let me know if you have any specific needs.", placeholder: "Ask follow-up..." },
+                    thesis: { title: "AI Thesis Assistant", choose: "Select a lesson case:", case1: "Unit 3 What were you doing...", case1desc: "Middle School English · Grade 8", case2: "Poetry Appreciation", case2desc: "Primary Chinese · Grade 1", case3: "Pythagorean Theorem", case3desc: "Middle School Math · Grade 8", cancel: "Cancel", confirm: "Generate Thesis" },
+                    homework: { title: "AI Homework Assistant", diag: "Diagnosis Result", diag_desc: "AI analysis shows class mastery of {strong1} is {strong2}. Targeted homework recommended.", d_s1: "\"Complex Sentences\"", d_s2: "68%", select: "Select Type:", t1: "Basics", t1d: "For most students", t2: "Advanced", t2d: "For top students", t3: "Layered", t3d: "Grouped by ability", t4: "Error-based", t4d: "Based on history", cancel: "Cancel", confirm: "Generate Homework" },
+                    chat: { title: "AI Teaching Assistant", subtitle: "Differentiated Teaching", q: "How to conduct differentiated teaching?", a_intro: "Hello, Teacher Zhang! Based on data, here are suggestions:", a_1_t: "Diagnosis", a_1_d: "Use 'AI Analysis' to identify gaps in 'Complex Sentences'", a_2_t: "Layered Tasks", a_2_d: "Design A/B/C level tasks for all students", a_3_t: "Grouping", a_3_d: "Auto-generate heterogeneous groups", a_4_t: "Personalized HW", a_4_d: "Push adapted exercises", tip: "Click below to start ↓", btn1: "View Analysis", btn2: "Gen Tasks", placeholder: "Ask follow-up..." }
+                },
+                charts: {
+                    teach: ['Design', 'Interact', 'Effic', 'Innov', 'Analysis'],
+                    research: ['Topic', 'Method', 'Data', 'Argue', 'Innov']
+                },
+                recommend: {
+                    title: "AI Recommendations", subtitle: "Recommended based on your profile", btn: "Resources",
+                    c1_title: "Master Class: 2026 Digital Teaching Seminar", c1_tag: "Analysis", c1_view: "1250 Views",
+                    c2_tag: "CNKI Paper", c2_title: "LLM Application in Oral English Evaluation", c2_info: "2025.12 | Core Journal",
+                    c3_tag: "School Resources", c3_title: "Grade 9 Unit 5 Interactive Material Pack", c3_author: "By Teacher Li",
+                    c4_tag: "Competition Case", c4_title: "National Digital Transformation Contest Excellence", c4_tag2: "Courseware", c4_like: "890 Likes"
+                }
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function toggleSettings(show) {
+            const modal = document.getElementById('settingsModal');
+            show ? modal.classList.add('active') : modal.classList.remove('active');
+        }
+
+        function toggleLanguage(isEnglish) {
+            currentLang = isEnglish ? 'en' : 'zh';
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            const data = transData[currentLang];
+            document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
+
+            // 1. Update simple text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const keys = key.split('.');
+                let val = data;
+                keys.forEach(k => val = val ? val[k] : null);
+
+                if (val) {
+                    // Check if it has placeholder formatting (simple check)
+                    if (val.includes('{strong1}')) {
+                        // Skip complex ones handled separately or handle generic replacements here if standardized
+                        // For now, we manually handle complex blocks if ID is present, else simple replacement
+                        if (!el.id) el.innerText = val;
+                    } else {
+                        el.innerText = val;
+                    }
+                }
+            });
+
+            // 2. Update Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const keys = key.split('.');
+                let val = data;
+                keys.forEach(k => val = val ? val[k] : null);
+                if (val) el.placeholder = val;
+            });
+
+            // 3. Update Charts
+            renderRadar('teachRadar', currentLang === 'en' ? [85, 90, 75, 80, 85] : [85, 90, 75, 80, 85], 'rgba(59, 130, 246, 1)');
+            renderRadar('researchRadar', currentLang === 'en' ? [45, 65, 95, 75, 80] : [45, 65, 95, 75, 80], 'rgba(59, 130, 246, 1)');
+
+            // 4. Update Complex Content (Manual HTML Injection for bolding etc)
+            updateComplexContent(data);
+        }
+
+        function updateComplexContent(data) {
+            // Main Analysis
+            const main = data.analysis;
+            const mainHTML = main.main_desc
+                .replace('{strong1}', `<span class="font-bold border-b-2 border-transparent hover:border-blue-200 transition">${main.strong1}</span>`) // simplified styling for EN
+                .replace('{strong2}', `<span class="font-bold">${main.strong2}</span>`)
+                .replace('{strong3}', `<span class="font-bold">${main.strong3}</span>`)
+                .replace('{link}', `<a href="javascript:void(0)" onclick="document.getElementById('aiChatModal').classList.remove('hidden'); document.getElementById('aiFloatingDock').style.display='none';" class="font-bold text-blue-700 underline decoration-2 underline-offset-4 cursor-pointer hover:text-indigo-800">${main.link_diff}</a>`);
+
+            const mainDescEl = document.getElementById('mainAnalysisDesc');
+            if (mainDescEl) mainDescEl.innerHTML = mainHTML;
+
+
+            // Card 1
+            const c1 = data.analysis;
+            const c1HTML = c1.card1_desc
+                .replace('{strong1}', `<span class="font-bold">${c1.card1_s1}</span>`)
+                .replace('{strong2}', `<span class="font-bold">${c1.card1_s2}</span>`)
+                .replace('{strong3}', `<span class="font-bold">${c1.card1_s3}</span>`)
+                .replace('{link}', `<a href="javascript:void(0)" onclick="document.getElementById('homeworkModal').classList.remove('hidden'); document.getElementById('aiFloatingDock').style.display='none';" class="font-bold text-blue-700 underline decoration-2 underline-offset-4 cursor-pointer hover:text-indigo-800">${c1.link_hw}</a>`);
+            const c1DescEl = document.getElementById('card1Desc');
+            if (c1DescEl) c1DescEl.innerHTML = c1HTML;
+
+            // Card 2
+            const c2 = data.analysis;
+            const c2HTML = c2.card2_desc
+                .replace('{strong1}', `<span class="font-bold">${c2.card2_s1}</span>`)
+                .replace('{link}', `<a href="javascript:void(0)" onclick="document.getElementById('thesisModal').classList.remove('hidden'); document.getElementById('aiFloatingDock').style.display='none';" class="font-bold text-blue-700 underline decoration-2 underline-offset-4 cursor-pointer hover:text-indigo-800">${c2.link_thesis}</a>`);
+            const c2DescEl = document.getElementById('card2Desc');
+            if (c2DescEl) c2DescEl.innerHTML = c2HTML;
+
+            // Homework Diag
+            const hw = data.modals.homework;
+            const hwHTML = hw.diag_desc
+                .replace('{strong1}', `<span class="font-bold text-blue-600">${hw.d_s1}</span>`)
+                .replace('{strong2}', `<span class="font-bold text-orange-500">${hw.d_s2}</span>`);
+            const hwDescEl = document.getElementById('homeworkDiagDesc');
+            if (hwDescEl) hwDescEl.innerHTML = hwHTML;
+        }
+
+        // Override renderRadar to support dynamic labels
+        function renderRadar(id, data, color) {
+            // Destroy existing chart if it exists to re-render with new labels
+            const chartStatus = Chart.getChart(id);
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+
+            const ctx = document.getElementById(id).getContext('2d');
+            const labels = transData[currentLang].charts[id === 'teachRadar' ? 'teach' : 'research'];
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data, backgroundColor: color.replace('1)', '0.1)'), borderColor: color, borderWidth: 2,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } }, scales: {
+                        r: {
+                            ticks: { display: false }, grid: {
+                                color:
+                                    '#f1f5f9'
+                            }, pointLabels: { font: { size: 9, weight: 'bold' }, color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('allAppsModal');
+            if (modal) {
+                show ? modal.classList.add('active') : modal.classList.remove('active');
+            }
+        }
+
+        function handleDockSubmit() {
+            const input = document.getElementById('dockInput');
+            const query = input.value.trim();
+            if (!query) return;
+
+            // Set user question in modal
+            const qEl = document.getElementById('globalUserQuestion');
+            if (qEl) qEl.innerText = query;
+
+            // Show modal
+            const modal = document.getElementById('globalChatModal');
+            if (modal) modal.classList.remove('hidden');
+
+            // Hide dock
+            const dock = document.getElementById('aiFloatingDock');
+            if (dock) dock.style.display = 'none';
+
+            // Clear input
+            input.value = '';
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+        });
+    </script>
+</body>
+
+</html>

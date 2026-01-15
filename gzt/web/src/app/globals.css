@@ -1,0 +1,180 @@
+:root {
+  /* Brand Colors - Emerald/Teal inspired by the reference image */
+  --primary-hue: 158;
+  --primary-saturation: 64%;
+  --primary-lightness: 52%;
+  --primary: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
+  --primary-foreground: #ffffff;
+
+  /* Neutral Colors */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  /* Slate 900 */
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --muted: #f1f5f9;
+  /* Slate 100 */
+  --muted-foreground: #64748b;
+  /* Slate 500 */
+
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e2e8f0;
+  /* Slate 200 */
+  --input: #e2e8f0;
+  --ring: var(--primary);
+
+  --radius: 0.5rem;
+
+  /* Sidebar specific */
+  --sidebar-background: #ffffff;
+  --sidebar-foreground: #64748b;
+  --sidebar-active-background: #ecfdf5;
+  /* Emerald 50 */
+  --sidebar-active-foreground: var(--primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #020617;
+    /* Slate 950 */
+    --foreground: #f8fafc;
+    /* Slate 50 */
+
+    --card: #020617;
+    --card-foreground: #f8fafc;
+
+    --popover: #020617;
+    --popover-foreground: #f8fafc;
+
+    --muted: #1e293b;
+    /* Slate 800 */
+    --muted-foreground: #94a3b8;
+    /* Slate 400 */
+
+    --accent: #1e293b;
+    --accent-foreground: #f8fafc;
+
+    --destructive: #7f1d1d;
+    --destructive-foreground: #f8fafc;
+
+    --border: #1e293b;
+    --input: #1e293b;
+
+    --sidebar-background: #020617;
+    --sidebar-foreground: #94a3b8;
+    --sidebar-active-background: #064e3b;
+    /* Emerald 900 */
+    --sidebar-active-foreground: #ffffff;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Utility classes for layout */
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.bg-muted\/20 {
+  background-color: rgba(241, 245, 249, 0.2);
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}

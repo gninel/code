@@ -1,0 +1,153 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+
+/// 测试不同的语言参数
+const String API_KEY = '390583124637d47a099fdd5a59860bde';
+const String API_SECRET = 'MThmZmE0M2Y1MmUyZWQwYzU4N2ZlMzQ2';
+
+void main() async {
+  print('🔍 测试讯飞API语言参数');
+  print('=' * 40);
+
+  const testFile = '/Users/zhb/Documents/code/voice/test_audio/test_1.wav';
+  final file = File(testFile);
+
+  if (!file.existsSync()) {
+    print('❌ 测试文件不存在');
+    return;
+  }
+
+  final fileSize = await file.length();
+  final fileName = file.path.split('/').last;
+
+  // 尝试不同的语言参数
+  final languageCandidates = [
+    'cn',
+    'zh_cn',
+    'zh-CN',
+    'zh',
+    'zh_cn',
+    'mandarin',
+    'chinese',
+    'zh-cn'
+  ];
+
+  for (final language in languageCandidates) {
+    print('\n📋 尝试语言参数: "$language"');
+    print('-' * 30);
+
+    try {
+      final success = await testLanguage(file, language);
+      if (success) {
+        print('✅ 语言参数 "$language" 成功！');
+        break;
+      } else {
+        print('❌ 语言参数 "$language" 失败');
+      }
+    } catch (e) {
+      print('❌ 测试 "$language" 时出错: $e');
+    }
+
+    // 等待1秒再测试下一个
+    await Future.delayed(const Duration(seconds: 1));
+  }
+}
+
+Future<bool> testLanguage(File file, String language) async {
+  final fileSize = await file.length();
+  final fileName = file.path.split('/').last;
+
+  // 构建请求参数
+  final dateTime = _getDateTimeString();
+  final signatureRandom = const Uuid().v4();
+
+  final params = <String, String>{
+    'accessKeyId': API_KEY,
+    'dateTime': dateTime,
+    'duration': '8522', // 估算时长
+    'fileName': fileName,
+    'fileSize': fileSize.toString(),
+    'language': language,
+    'signatureRandom': signatureRandom,
+  };
+
+  // 生成签名
+  final signature = _generateSignature(params, API_SECRET);
+
+  // 构建 URL
+  final queryString = params.entries
+      .map((e) => '${e.key}=${_javaUrlEncode(e.value)}')
+      .join('&');
+  final url = 'https://office-api-ist-dx.iflyaisol.com/v2/upload?$queryString';
+
+  try {
+    final dio = Dio();
+    final response = await dio.post(
+      url,
+      data: file.readAsBytesSync(),
+      options: Options(
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'Content-Length': fileSize,
+          'signature': signature,
+        },
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
+
+    final data = response.data;
+    final code = data['code']?.toString();
+
+    if (code == '000000' || code == '0') {
+      print('✓ 上传成功，orderId: ${data['content']?['orderId']}');
+      return true;
+    } else {
+      print('✗ 上传失败: ${data['descInfo']} (Code: $code)');
+      return false;
+    }
+  } catch (e) {
+    print('✗ 网络错误: $e');
+    return false;
+  }
+}
+
+String _generateSignature(Map<String, String> params, String accessKeySecret) {
+  final sortedKeys = params.keys.toList()..sort();
+
+  final pairs = <String>[];
+  for (final key in sortedKeys) {
+    if (key != 'signature' && params[key]?.isNotEmpty == true) {
+      final value = _javaUrlEncode(params[key]!);
+      pairs.add('$key=$value');
+    }
+  }
+  final baseString = pairs.join('&');
+
+  final hmac = Hmac(sha1, utf8.encode(accessKeySecret));
+  final digest = hmac.convert(utf8.encode(baseString));
+
+  return base64.encode(digest.bytes);
+}
+
+String _javaUrlEncode(String value) {
+  return Uri.encodeComponent(value).replaceAll('%20', '+');
+}
+
+String _getDateTimeString() {
+  final now = DateTime.now();
+  final formatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
+  final dateStr = formatter.format(now);
+
+  final offset = now.timeZoneOffset;
+  final sign = offset.isNegative ? '-' : '+';
+  final hours = offset.inHours.abs().toString().padLeft(2, '0');
+  final minutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+
+  return '$dateStr$sign$hours$minutes';
+}

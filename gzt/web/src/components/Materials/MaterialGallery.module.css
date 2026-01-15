@@ -1,0 +1,159 @@
+.galleryWrapper {
+    width: 100%;
+}
+
+.tabBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.tabs {
+    display: flex;
+    gap: 2rem;
+}
+
+.tabItem {
+    font-size: 1rem;
+    color: #64748b;
+    cursor: pointer;
+    position: relative;
+    padding-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.tabItem.active {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.tabItem.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #0f172a;
+    border-radius: 2px;
+}
+
+.hotTag {
+    background: #ef4444;
+    color: white;
+    font-size: 0.6rem;
+    padding: 0 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+    vertical-align: top;
+}
+
+.searchBar {
+    width: 260px;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: #f1f5f9;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cardPreview {
+    height: 180px;
+    position: relative;
+}
+
+.cardContentPreview {
+    padding: 1.5rem;
+    color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cardTitleOverlay {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.cardText {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.imageTag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.cardFooter {
+    padding: 1rem;
+}
+
+.cardTitle {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cardMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #cbd5e1;
+}
