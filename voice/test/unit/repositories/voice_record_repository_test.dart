@@ -26,30 +26,31 @@ void main() {
 
     test('should get voice records successfully', () async {
       // Arrange
-      when(mockRepository.getVoiceRecords())
+      when(mockRepository.getAllVoiceRecords())
           .thenAnswer((_) async => Right([testVoiceRecord]));
 
       // Act
-      final result = await mockRepository.getVoiceRecords();
+      final result = await mockRepository.getAllVoiceRecords();
 
       // Assert
-      expect(result, Right<[Failure, List<VoiceRecord>], List<VoiceRecord>>([testVoiceRecord]));
-      verify(mockRepository.getVoiceRecords());
+      expect(result.isRight(), true);
+      expect(result.getOrElse(() => []), equals([testVoiceRecord]));
+      verify(mockRepository.getAllVoiceRecords());
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('should return failure when getting voice records fails', () async {
       // Arrange
-      final failure = ServerFailure('Server error');
-      when(mockRepository.getVoiceRecords())
+      final failure = NetworkFailure.serverError();
+      when(mockRepository.getAllVoiceRecords())
           .thenAnswer((_) async => Left(failure));
 
       // Act
-      final result = await mockRepository.getVoiceRecords();
+      final result = await mockRepository.getAllVoiceRecords();
 
       // Assert
       expect(result.isLeft(), true);
-      expect(result.fold((l) => l, (r) => null), isA<ServerFailure>());
+      expect(result.fold((l) => l, (r) => null), isA<NetworkFailure>());
     });
 
     test('should get voice record by id successfully', () async {
@@ -65,9 +66,9 @@ void main() {
       verify(mockRepository.getVoiceRecordById('test-id-1'));
     });
 
-    test('should return NotFoundFailure when id does not exist', () async {
+    test('should return DatabaseFailure when id does not exist', () async {
       // Arrange
-      final failure = NotFoundFailure('Record not found');
+      final failure = DatabaseFailure.tableNotFound('id not found');
       when(mockRepository.getVoiceRecordById('non-existent'))
           .thenAnswer((_) async => Left(failure));
 
@@ -76,20 +77,20 @@ void main() {
 
       // Assert
       expect(result.isLeft(), true);
-      expect(result.fold((l) => l, (r) => null), isA<NotFoundFailure>());
+      expect(result.fold((l) => l, (r) => null), isA<DatabaseFailure>());
     });
 
     test('should save voice record successfully', () async {
       // Arrange
-      when(mockRepository.saveVoiceRecord(testVoiceRecord))
-          .thenAnswer((_) async => Right(testVoiceRecord));
+      when(mockRepository.insertVoiceRecord(testVoiceRecord))
+          .thenAnswer((_) async => const Right(null));
 
       // Act
-      final result = await mockRepository.saveVoiceRecord(testVoiceRecord);
+      final result = await mockRepository.insertVoiceRecord(testVoiceRecord);
 
       // Assert
-      expect(result, Right(testVoiceRecord));
-      verify(mockRepository.saveVoiceRecord(testVoiceRecord));
+      expect(result, const Right(null));
+      verify(mockRepository.insertVoiceRecord(testVoiceRecord));
     });
 
     test('should delete voice record successfully', () async {
@@ -109,31 +110,15 @@ void main() {
       // Arrange
       final updatedRecord = testVoiceRecord.copyWith(title: '更新标题');
       when(mockRepository.updateVoiceRecord(updatedRecord))
-          .thenAnswer((_) async => Right(updatedRecord));
+          .thenAnswer((_) async => const Right(null));
 
       // Act
       final result = await mockRepository.updateVoiceRecord(updatedRecord);
 
       // Assert
-      expect(result, Right(updatedRecord));
-      expect(result.fold((l) => null, (r) => r.title), '更新标题');
-    });
-
-    test('should get voice records by tags successfully', () async {
-      // Arrange
-      final taggedRecords = [
-        testVoiceRecord.copyWith(tags: ['童年']),
-        testVoiceRecord.copyWith(id: '2', tags: ['童年', '回忆']),
-      ];
-      when(mockRepository.getVoiceRecordsByTags(['童年']))
-          .thenAnswer((_) async => Right(taggedRecords));
-
-      // Act
-      final result = await mockRepository.getVoiceRecordsByTags(['童年']);
-
-      // Assert
-      expect(result.isRight(), true);
-      expect(result.fold((l) => [], (r) => r).length, 2);
+      expect(result, const Right(null));
+      // Verify update called
+      verify(mockRepository.updateVoiceRecord(updatedRecord));
     });
 
     test('should get voice records by date range successfully', () async {
@@ -144,7 +129,8 @@ void main() {
           .thenAnswer((_) async => Right([testVoiceRecord]));
 
       // Act
-      final result = await mockRepository.getVoiceRecordsByDateRange(startDate, endDate);
+      final result =
+          await mockRepository.getVoiceRecordsByDateRange(startDate, endDate);
 
       // Assert
       expect(result.isRight(), true);
@@ -155,11 +141,11 @@ void main() {
       test('should handle network failure', () async {
         // Arrange
         const failure = NetworkFailure('No internet connection');
-        when(mockRepository.getVoiceRecords())
+        when(mockRepository.getAllVoiceRecords())
             .thenAnswer((_) async => const Left(failure));
 
         // Act
-        final result = await mockRepository.getVoiceRecords();
+        final result = await mockRepository.getAllVoiceRecords();
 
         // Assert
         expect(result.isLeft(), true);
@@ -169,11 +155,11 @@ void main() {
       test('should handle cache failure', () async {
         // Arrange
         const failure = CacheFailure('Cache error');
-        when(mockRepository.saveVoiceRecord(testVoiceRecord))
+        when(mockRepository.insertVoiceRecord(testVoiceRecord))
             .thenAnswer((_) async => const Left(failure));
 
         // Act
-        final result = await mockRepository.saveVoiceRecord(testVoiceRecord);
+        final result = await mockRepository.insertVoiceRecord(testVoiceRecord);
 
         // Assert
         expect(result.isLeft(), true);

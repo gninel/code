@@ -173,7 +173,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
     final primaryColor = Theme.of(context).primaryColor;
     final cardColor = Theme.of(context).cardColor;
     final hintColor =
-        Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6) ??
+        Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ??
             Colors.grey;
 
     return PopScope(
@@ -222,7 +222,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                         border: Border.all(
                             color: Theme.of(context)
                                 .dividerColor
-                                .withOpacity(0.5)),
+                                .withValues(alpha: 0.5)),
                       ),
                       child: TextField(
                         controller: _transcriptionController,
@@ -233,7 +233,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                         decoration: InputDecoration(
                           hintText: '点击编辑转写内容...',
                           hintStyle:
-                              TextStyle(color: hintColor.withOpacity(0.5)),
+                              TextStyle(color: hintColor.withValues(alpha: 0.5)),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
                         ),
@@ -260,7 +260,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                         border: Border.all(
                             color: Theme.of(context)
                                 .dividerColor
-                                .withOpacity(0.5)),
+                                .withValues(alpha: 0.5)),
                       ),
                       child: TextField(
                         controller: _tagsController,
@@ -268,7 +268,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                         decoration: InputDecoration(
                           hintText: '输入标签，用顿号或逗号分隔...',
                           hintStyle:
-                              TextStyle(color: hintColor.withOpacity(0.5)),
+                              TextStyle(color: hintColor.withValues(alpha: 0.5)),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
                           prefixIcon: Icon(Icons.label_outline,
@@ -284,7 +284,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                     Text(
                       '标题将根据内容自动生成',
                       style: TextStyle(
-                        color: hintColor.withOpacity(0.7),
+                        color: hintColor.withValues(alpha: 0.7),
                         fontSize: 12,
                       ),
                     ),
@@ -300,7 +300,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 border: Border(
                   top: BorderSide(
-                      color: Theme.of(context).dividerColor.withOpacity(0.2)),
+                      color: Theme.of(context).dividerColor.withValues(alpha: 0.2)),
                 ),
               ),
               child: Row(
@@ -314,7 +314,7 @@ class _RecordingPreviewPageState extends State<RecordingPreviewPage> {
                         decoration: BoxDecoration(
                           color: Theme.of(context)
                               .disabledColor
-                              .withOpacity(0.2), // Lighter for cancel
+                              .withValues(alpha: 0.2), // Lighter for cancel
                           borderRadius: BorderRadius.circular(25),
                           border:
                               Border.all(color: Theme.of(context).dividerColor),

@@ -59,11 +59,11 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: const Color(0xFFFBF8F1), // 比背景稍亮一点的纸张色
         elevation: 4,
-        shadowColor: Colors.black.withOpacity(0.1),
+        shadowColor: Colors.black.withValues(alpha: 0.1),
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: vintagePrimary.withOpacity(0.1), width: 1),
+          side: BorderSide(color: vintagePrimary.withValues(alpha: 0.1), width: 1),
         ),
         clipBehavior: Clip.antiAlias,
       ),
@@ -78,14 +78,14 @@ class AppTheme {
       // 输入框主题
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withOpacity(0.5),
+        fillColor: Colors.white.withValues(alpha: 0.5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: vintageSecondary),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: vintageSecondary.withOpacity(0.5)),
+          borderSide: BorderSide(color: vintageSecondary.withValues(alpha: 0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -95,7 +95,7 @@ class AppTheme {
           horizontal: 16,
           vertical: 12,
         ),
-        hintStyle: TextStyle(color: vintagePrimary.withOpacity(0.5)),
+        hintStyle: TextStyle(color: vintagePrimary.withValues(alpha: 0.5)),
         labelStyle: const TextStyle(color: vintagePrimary),
       ),
 
@@ -105,7 +105,7 @@ class AppTheme {
           backgroundColor: vintagePrimary,
           foregroundColor: const Color(0xFFF7F3E8), // 文字颜色为纸张色
           elevation: 4,
-          shadowColor: Colors.black.withOpacity(0.2),
+          shadowColor: Colors.black.withValues(alpha: 0.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -197,7 +197,7 @@ class AppTheme {
 
       // 分割线主题
       dividerTheme: DividerThemeData(
-        color: vintagePrimary.withOpacity(0.2),
+        color: vintagePrimary.withValues(alpha: 0.2),
         thickness: 1,
       ),
 

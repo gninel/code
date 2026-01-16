@@ -5,18 +5,20 @@ import 'package:dio/dio.dart';
 import 'package:voice_autobiography_flutter/data/services/doubao_ai_service.dart';
 import 'package:voice_autobiography_flutter/core/errors/exceptions.dart';
 
+import 'package:voice_autobiography_flutter/core/services/prompt_loader_service.dart';
 import 'doubao_ai_service_edge_cases_test.mocks.dart';
 
-@GenerateMocks([Dio])
+@GenerateMocks([Dio, PromptLoaderService])
 void main() {
   group('豆包AI服务边界情况测试', () {
     late MockDio mockDio;
+    late MockPromptLoaderService mockPromptLoader;
     late DoubaoAiService aiService;
 
     setUp(() {
       mockDio = MockDio();
-      // 注意：这里需要修改DoubaoAiService构造函数以接受自定义Dio实例
-      // 或者使用依赖注入框架
+      mockPromptLoader = MockPromptLoaderService();
+      aiService = DoubaoAiService(mockPromptLoader, dio: mockDio);
     });
 
     group('TC9: AI响应格式处理', () {
@@ -247,7 +249,8 @@ void main() {
               {
                 'message': {
                   'content': '',
-                  'reasoning_content': 'Let me ask: "What was your favorite childhood memory?"',
+                  'reasoning_content':
+                      'Let me ask: "What was your favorite childhood memory?"',
                   'role': 'assistant',
                 }
               }
@@ -321,8 +324,7 @@ void main() {
       });
 
       test('TC12.2 - 应该在网络超时时正确重试或抛出异常', () async {
-        when(mockDio.post(any, data: anyNamed('data')))
-            .thenThrow(DioException(
+        when(mockDio.post(any, data: anyNamed('data'))).thenThrow(DioException(
           requestOptions: RequestOptions(path: '/test'),
           type: DioExceptionType.receiveTimeout,
         ));

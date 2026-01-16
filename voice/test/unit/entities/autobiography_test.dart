@@ -82,7 +82,8 @@ void main() {
 
       test('风格应该可以比较', () {
         expect(AutobiographyStyle.narrative, AutobiographyStyle.narrative);
-        expect(AutobiographyStyle.narrative, isNot(AutobiographyStyle.emotional));
+        expect(
+            AutobiographyStyle.narrative, isNot(AutobiographyStyle.emotional));
       });
     });
 
@@ -117,11 +118,12 @@ void main() {
       });
 
       test('Chapter应该支持copyWith', () {
-        const chapter = Chapter(
+        final chapter = Chapter(
           id: 'test',
           title: '原始标题',
           content: '内容',
           order: 1,
+          lastModifiedAt: DateTime.now(),
         );
 
         final updated = chapter.copyWith(
@@ -210,11 +212,12 @@ void main() {
       });
 
       test('chapters应该影响相等性', () {
-        const chapter1 = Chapter(
+        final chapter1 = Chapter(
           id: 'c1',
           title: '第一章',
           content: '内容',
           order: 1,
+          lastModifiedAt: DateTime.now(),
         );
 
         final bio1 = Autobiography(
@@ -223,7 +226,7 @@ void main() {
           content: 'content',
           generatedAt: now,
           lastModifiedAt: now,
-          chapters: const [chapter1],
+          chapters: [chapter1],
         );
 
         final bio2 = Autobiography(
@@ -253,6 +256,7 @@ void main() {
             title: '章节$index',
             content: '内容$index',
             order: index,
+            lastModifiedAt: DateTime.now(),
           ),
         );
 
@@ -303,36 +307,40 @@ void main() {
 
     group('Chapter Equatable', () {
       test('相同属性的Chapter应该相等', () {
-        const chapter1 = Chapter(
+        final chapter1 = Chapter(
           id: 'test',
           title: 'test',
           content: 'content',
           order: 1,
+          lastModifiedAt: DateTime.now(),
         );
-        const chapter2 = Chapter(
+        final chapter2 = Chapter(
           id: 'test',
           title: 'test',
           content: 'content',
           order: 1,
+          lastModifiedAt: DateTime.now(),
         );
 
         expect(chapter1, equals(chapter2));
       });
 
       test('sourceRecordIds应该影响相等性', () {
-        const chapter1 = Chapter(
+        final chapter1 = Chapter(
           id: 'test',
           title: 'test',
           content: 'content',
           order: 1,
-          sourceRecordIds: ['record1'],
+          sourceRecordIds: const ['record1'],
+          lastModifiedAt: DateTime.now(),
         );
-        const chapter2 = Chapter(
+        final chapter2 = Chapter(
           id: 'test',
           title: 'test',
           content: 'content',
           order: 1,
-          sourceRecordIds: ['record2'],
+          sourceRecordIds: const ['record2'],
+          lastModifiedAt: DateTime.now(),
         );
 
         expect(chapter1, isNot(equals(chapter2)));

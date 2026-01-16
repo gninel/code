@@ -75,8 +75,11 @@ void main() async {
   }
 
   // 初始化提示词配置
+  print('[Main] Waiting for initializePromptLoader...');
   await initializePromptLoader();
+  print('[Main] initializePromptLoader done.');
 
+  print('[Main] Calling runApp...');
   runApp(const VoiceAutobiographyApp());
 }
 

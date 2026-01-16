@@ -15,7 +15,8 @@ class AppConstants {
 
   // 豆包AI配置
   static const String doubaoApiKey = '405fe7f2-f603-4c4c-b04b-bdea5d441319';
-  static const String doubaoBaseUrl = 'https://ark.cn-beijing.volces.com/api/v3';
+  static const String doubaoBaseUrl =
+      'https://ark.cn-beijing.volces.com/api/v3';
   static const String doubaoChatCompletions = '/chat/completions';
   static const String doubaoModel = 'doubao-seed-1-6-251015';
   static const int doubaoMaxTokens = 65535;
@@ -100,6 +101,15 @@ class DatabaseTables {
   static const String settings = 'settings';
   static const String interviewSessions = 'interview_sessions';
   static const String interviewQuestions = 'interview_questions';
+
+  static List<String> get tables => [
+        voiceRecords,
+        autobiographies,
+        autobiographyVersions,
+        settings,
+        interviewSessions,
+        interviewQuestions,
+      ];
 }
 
 /// SharedPreferences键名常量

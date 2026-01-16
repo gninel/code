@@ -190,6 +190,7 @@ void main() {
           mockAiService,
           mockRecordRepo,
           mockDbService,
+          MockInterviewQuestionPool(),
         );
       });
 
@@ -235,6 +236,7 @@ void main() {
           mockAiService,
           mockRecordRepo,
           mockDbService,
+          MockInterviewQuestionPool(),
         );
       });
 

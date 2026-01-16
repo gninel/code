@@ -217,7 +217,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
               Icon(
                 Icons.question_answer_outlined,
                 size: 64, // 从80缩小
-                color: Theme.of(context).primaryColor.withOpacity(0.5),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 16), // 从24缩小
               Text(
@@ -227,7 +227,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
                           .textTheme
                           .bodyMedium
                           ?.color
-                          ?.withOpacity(0.7),
+                          ?.withValues(alpha: 0.7),
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -326,7 +326,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
             child: LinearProgressIndicator(
               value: state.progress,
               minHeight: 6,
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               valueColor: AlwaysStoppedAnimation<Color>(
                 Theme.of(context).primaryColor,
               ),
@@ -347,12 +347,12 @@ class _InterviewWidgetState extends State<InterviewWidget>
           color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Theme.of(context).primaryColor.withOpacity(0.2),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).primaryColor.withOpacity(0.05),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -380,12 +380,12 @@ class _InterviewWidgetState extends State<InterviewWidget>
         color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(0.2),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).primaryColor.withOpacity(0.05),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -399,7 +399,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
               Container(
                 padding: const EdgeInsets.all(4), // 从8减少到4，高度减半
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6), // 从8减少到6
                 ),
                 child: Icon(
@@ -471,7 +471,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
                       boxShadow: [
                         BoxShadow(
                           color: const Color(0xFFD32F2F)
-                              .withOpacity(0.3), // 统一阴影透明度
+                              .withValues(alpha: 0.3), // 统一阴影透明度
                           blurRadius: isRecording ? 20 : 15, // 统一模糊半径
                           spreadRadius: isRecording ? 3 : 0, // 统一扩散范围
                         ),
@@ -499,7 +499,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
                   .textTheme
                   .bodyMedium
                   ?.color
-                  ?.withOpacity(0.7),
+                  ?.withValues(alpha: 0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -515,7 +515,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
                   .textTheme
                   .bodyMedium
                   ?.color
-                  ?.withOpacity(0.5),
+                  ?.withValues(alpha: 0.5),
               fontSize: 18,
               fontWeight: FontWeight.w300,
               letterSpacing: 1,
@@ -538,10 +538,10 @@ class _InterviewWidgetState extends State<InterviewWidget>
       ),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(0.2),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -568,7 +568,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
                 Text(
                   recordingState.confidencePercentage,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).primaryColor.withOpacity(0.7),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                       ),
                 ),
               ],
@@ -589,7 +589,7 @@ class _InterviewWidgetState extends State<InterviewWidget>
                               .textTheme
                               .bodyMedium
                               ?.color
-                              ?.withOpacity(0.4),
+                              ?.withValues(alpha: 0.4),
                     ),
               ),
             ),

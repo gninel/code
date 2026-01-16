@@ -435,8 +435,8 @@ void main() {
             id: 'auto_001',
             title: '我的自传',
             content: '这是自传内容',
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
+            generatedAt: DateTime.now(),
+            lastModifiedAt: DateTime.now(),
           ),
         ];
 

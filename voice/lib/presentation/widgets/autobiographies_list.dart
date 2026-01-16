@@ -281,7 +281,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                               .textTheme
                               .bodyMedium
                               ?.color
-                              ?.withOpacity(0.6),
+                              ?.withValues(alpha: 0.6),
                           fontSize: 14,
                         ),
                         textAlign: TextAlign.center,
@@ -313,7 +313,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                       Icon(
                         Icons.book_outlined,
                         size: 64,
-                        color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -328,7 +328,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                         '从您的语音记录生成第一篇自传吧',
                         style: TextStyle(
                           color:
-                              Theme.of(context).primaryColor.withOpacity(0.6),
+                              Theme.of(context).primaryColor.withValues(alpha: 0.6),
                           fontSize: 14,
                         ),
                       ),
@@ -375,7 +375,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                             .textTheme
                             .bodySmall
                             ?.color
-                            ?.withOpacity(0.6),
+                            ?.withValues(alpha: 0.6),
                         fontSize: 13,
                       ),
                     ),
@@ -414,7 +414,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                                           ? Theme.of(context).primaryColor
                                           : Theme.of(context)
                                               .primaryColor
-                                              .withOpacity(0.5),
+                                              .withValues(alpha: 0.5),
                                       fontSize: 14,
                                       fontWeight: isSelected
                                           ? FontWeight.bold
@@ -486,7 +486,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
         borderRadius: BorderRadius.circular(12),
         // 复古内红/棕线
         side:
-            BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.1)),
+            BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -503,7 +503,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
             ),
 
             const SizedBox(height: 20),
-            Divider(color: Theme.of(context).dividerColor.withOpacity(0.2)),
+            Divider(color: Theme.of(context).dividerColor.withValues(alpha: 0.2)),
             const SizedBox(height: 8),
 
             // 来源录音链接
@@ -524,7 +524,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                     children: [
                       Icon(
                         Icons.play_circle_outline,
-                        color: Theme.of(context).primaryColor.withOpacity(0.7),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                         size: 18,
                       ),
                       const SizedBox(width: 4),
@@ -532,7 +532,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                         '查看来源录音',
                         style: TextStyle(
                           color:
-                              Theme.of(context).primaryColor.withOpacity(0.7),
+                              Theme.of(context).primaryColor.withValues(alpha: 0.7),
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
@@ -548,7 +548,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                         .textTheme
                         .bodySmall
                         ?.color
-                        ?.withOpacity(0.5),
+                        ?.withValues(alpha: 0.5),
                     fontSize: 12,
                   ),
                 ),
@@ -560,7 +560,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                         .textTheme
                         .bodySmall
                         ?.color
-                        ?.withOpacity(0.5),
+                        ?.withValues(alpha: 0.5),
                     fontSize: 12,
                   ),
                 ),
@@ -898,16 +898,16 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.7)),
+                      ?.withValues(alpha: 0.7)),
             ),
             if (existingAutobiographies.isNotEmpty) ...[
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                  border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                 ),
                 child: const Row(
                   children: [
@@ -1148,7 +1148,7 @@ class _AutobiographiesListState extends State<AutobiographiesList>
                           .textTheme
                           .bodySmall
                           ?.color
-                          ?.withOpacity(0.6),
+                          ?.withValues(alpha: 0.6),
                     ),
               ),
             ],

@@ -152,7 +152,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.6),
+                            ?.withValues(alpha: 0.6),
                         fontSize: 14,
                       ),
                     ),
@@ -167,7 +167,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.5),
+                            ?.withValues(alpha: 0.5),
                         fontSize: 18,
                         fontWeight: FontWeight.w300,
                         letterSpacing: 1,
@@ -210,13 +210,13 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                       },
                       icon: Icon(Icons.upload_file,
                           color:
-                              Theme.of(context).primaryColor.withOpacity(0.6),
+                              Theme.of(context).primaryColor.withValues(alpha: 0.6),
                           size: 20),
                       label: Text(
                         '上传录音',
                         style: TextStyle(
                           color:
-                              Theme.of(context).primaryColor.withOpacity(0.6),
+                              Theme.of(context).primaryColor.withValues(alpha: 0.6),
                           fontSize: 13,
                         ),
                       ),
@@ -224,7 +224,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         backgroundColor:
-                            Theme.of(context).primaryColor.withOpacity(0.05),
+                            Theme.of(context).primaryColor.withValues(alpha: 0.05),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                       ),
@@ -257,10 +257,10 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withOpacity(0.2),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -287,7 +287,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                 Text(
                   state.confidencePercentage,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).primaryColor.withOpacity(0.7),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                       ),
                 ),
               ],
@@ -314,7 +314,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                                 .textTheme
                                 .bodyMedium
                                 ?.color
-                                ?.withOpacity(0.4),
+                                ?.withValues(alpha: 0.4),
                       ),
                 ),
               ),
@@ -359,7 +359,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: buttonColor.withOpacity(0.3), // 降低阴影透明度
+                    color: buttonColor.withValues(alpha: 0.3), // 降低阴影透明度
                     blurRadius: isRecording ? 20 : 15, // 减小模糊半径
                     spreadRadius: isRecording ? 3 : 0, // 减小扩散范围
                   ),
@@ -394,7 +394,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-              color: Theme.of(context).primaryColor.withOpacity(0.1)),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -407,7 +407,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                   Text(
                     '实时转写',
                     style: TextStyle(
-                      color: Theme.of(context).primaryColor.withOpacity(0.7),
+                      color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -417,12 +417,12 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.05),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
                             color: Theme.of(context)
                                 .primaryColor
-                                .withOpacity(0.1)),
+                                .withValues(alpha: 0.1)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -430,7 +430,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                           Icon(
                             Icons.edit,
                             color:
-                                Theme.of(context).primaryColor.withOpacity(0.5),
+                                Theme.of(context).primaryColor.withValues(alpha: 0.5),
                             size: 12,
                           ),
                           const SizedBox(width: 4),
@@ -438,7 +438,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                               style: TextStyle(
                                   color: Theme.of(context)
                                       .primaryColor
-                                      .withOpacity(0.5),
+                                      .withValues(alpha: 0.5),
                                   fontSize: 10)),
                         ],
                       ),
@@ -455,7 +455,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                     style: TextStyle(
                       color: state.hasRecognizedText
                           ? Theme.of(context).primaryColor
-                          : Theme.of(context).primaryColor.withOpacity(0.4),
+                          : Theme.of(context).primaryColor.withValues(alpha: 0.4),
                       fontSize: 15,
                       height: 1.6,
                     ),
@@ -498,7 +498,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.2),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -516,7 +516,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                       '取消',
                       style: TextStyle(
                           color:
-                              Theme.of(context).primaryColor.withOpacity(0.5)),
+                              Theme.of(context).primaryColor.withValues(alpha: 0.5)),
                     ),
                   ),
                   Text(
@@ -563,7 +563,7 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                     enabledBorder: InputBorder.none,
                     hintText: '暂无内容...',
                     hintStyle: TextStyle(
-                        color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.3)),
                   ),
                 ),
               ),
@@ -594,8 +594,8 @@ class _IntegratedRecordingWidgetState extends State<IntegratedRecordingWidget>
                 textStyle: const TextStyle(fontSize: 15),
                 backgroundColor: const Color(0xFF388E3C),
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: const Color(0xFF388E3C).withOpacity(0.3),
-                disabledForegroundColor: Colors.white.withOpacity(0.5),
+                disabledBackgroundColor: const Color(0xFF388E3C).withValues(alpha: 0.3),
+                disabledForegroundColor: Colors.white.withValues(alpha: 0.5),
               ),
               child: const Text('保存'),
             ),

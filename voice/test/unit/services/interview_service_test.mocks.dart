@@ -14,6 +14,8 @@ import 'package:voice_autobiography_flutter/data/services/database_service.dart'
     as _i11;
 import 'package:voice_autobiography_flutter/data/services/doubao_ai_service.dart'
     as _i5;
+import 'package:voice_autobiography_flutter/data/services/interview_question_pool.dart'
+    as _i12;
 import 'package:voice_autobiography_flutter/domain/entities/autobiography.dart'
     as _i6;
 import 'package:voice_autobiography_flutter/domain/entities/voice_record.dart'
@@ -727,4 +729,50 @@ class MockDatabaseService extends _i1.Mock implements _i11.DatabaseService {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+}
+
+/// A class which mocks [InterviewQuestionPool].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockInterviewQuestionPool extends _i1.Mock
+    implements _i12.InterviewQuestionPool {
+  MockInterviewQuestionPool() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  List<String> getQuestions(int? count) => (super.noSuchMethod(
+        Invocation.method(
+          #getQuestions,
+          [count],
+        ),
+        returnValue: <String>[],
+      ) as List<String>);
+
+  @override
+  void reset() => super.noSuchMethod(
+        Invocation.method(
+          #reset,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addCustomQuestions(List<String>? questions) => super.noSuchMethod(
+        Invocation.method(
+          #addCustomQuestions,
+          [questions],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  Map<String, dynamic> getStatus() => (super.noSuchMethod(
+        Invocation.method(
+          #getStatus,
+          [],
+        ),
+        returnValue: <String, dynamic>{},
+      ) as Map<String, dynamic>);
 }

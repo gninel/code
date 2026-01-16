@@ -189,7 +189,7 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
     final textColor =
         Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
     final hintColor =
-        Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6) ??
+        Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6) ??
             Colors.grey;
 
     return Scaffold(
@@ -243,7 +243,7 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: Theme.of(context).dividerColor.withOpacity(0.5)),
+                  color: Theme.of(context).dividerColor.withValues(alpha: 0.5)),
             ),
             child: Column(
               children: [
@@ -303,7 +303,7 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               activeTrackColor: Theme.of(context).primaryColor,
-                              inactiveTrackColor: hintColor.withOpacity(0.3),
+                              inactiveTrackColor: hintColor.withValues(alpha: 0.3),
                               thumbColor: Theme.of(context).primaryColor,
                               trackHeight: 4,
                             ),
@@ -357,12 +357,12 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
                               horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
                             color:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
+                                Theme.of(context).primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                                 color: Theme.of(context)
                                     .primaryColor
-                                    .withOpacity(0.3)),
+                                    .withValues(alpha: 0.3)),
                           ),
                           child: Text(
                             tag,
@@ -386,7 +386,7 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: Theme.of(context).dividerColor.withOpacity(0.5)),
+                    color: Theme.of(context).dividerColor.withValues(alpha: 0.5)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,7 +408,7 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
                             decoration: InputDecoration(
                               hintText: '编辑转写内容...',
                               hintStyle:
-                                  TextStyle(color: hintColor.withOpacity(0.5)),
+                                  TextStyle(color: hintColor.withValues(alpha: 0.5)),
                               border: InputBorder.none,
                             ),
                             maxLines: null,
@@ -439,7 +439,7 @@ class _VoiceRecordDetailPageState extends State<VoiceRecordDetailPage> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 border: Border(
                   top: BorderSide(
-                      color: Theme.of(context).dividerColor.withOpacity(0.2)),
+                      color: Theme.of(context).dividerColor.withValues(alpha: 0.2)),
                 ),
               ),
               child: Row(

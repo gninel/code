@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../presentation/bloc/language/language_bloc.dart';
 
@@ -15,6 +16,9 @@ Future<void> configureDependencies() async {
 
   // Manually register LanguageBloc
   getIt.registerFactory<LanguageBloc>(() => LanguageBloc());
+
+  // Manually register Dio
+  getIt.registerLazySingleton<Dio>(() => Dio());
 
   getIt.init();
 }

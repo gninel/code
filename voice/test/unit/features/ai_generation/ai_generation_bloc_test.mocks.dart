@@ -8,6 +8,10 @@ import 'dart:async' as _i4;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:voice_autobiography_flutter/core/errors/failures.dart' as _i5;
+import 'package:voice_autobiography_flutter/data/services/ai_generation_persistence_service.dart'
+    as _i9;
+import 'package:voice_autobiography_flutter/data/services/background_ai_service.dart'
+    as _i10;
 import 'package:voice_autobiography_flutter/domain/entities/autobiography.dart'
     as _i7;
 import 'package:voice_autobiography_flutter/domain/entities/voice_record.dart'
@@ -594,4 +598,166 @@ class MockAutobiographyRepository extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, void>>);
+}
+
+/// A class which mocks [AiGenerationPersistenceService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAiGenerationPersistenceService extends _i1.Mock
+    implements _i9.AiGenerationPersistenceService {
+  MockAiGenerationPersistenceService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> saveGenerationState({
+    required String? generationType,
+    required List<String>? voiceRecordIds,
+    String? currentAutobiographyId,
+    String? generatedContent,
+    String? generatedTitle,
+    String? generatedSummary,
+    String? status,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #saveGenerationState,
+          [],
+          {
+            #generationType: generationType,
+            #voiceRecordIds: voiceRecordIds,
+            #currentAutobiographyId: currentAutobiographyId,
+            #generatedContent: generatedContent,
+            #generatedTitle: generatedTitle,
+            #generatedSummary: generatedSummary,
+            #status: status,
+          },
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateGenerationProgress({
+    String? generatedContent,
+    String? generatedTitle,
+    String? generatedSummary,
+    String? status,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateGenerationProgress,
+          [],
+          {
+            #generatedContent: generatedContent,
+            #generatedTitle: generatedTitle,
+            #generatedSummary: generatedSummary,
+            #status: status,
+          },
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  bool hasUnfinishedTask() => (super.noSuchMethod(
+        Invocation.method(
+          #hasUnfinishedTask,
+          [],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i4.Future<void> clearGenerationState() => (super.noSuchMethod(
+        Invocation.method(
+          #clearGenerationState,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  bool isTaskTimeout() => (super.noSuchMethod(
+        Invocation.method(
+          #isTaskTimeout,
+          [],
+        ),
+        returnValue: false,
+      ) as bool);
+}
+
+/// A class which mocks [BackgroundAiService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockBackgroundAiService extends _i1.Mock
+    implements _i10.BackgroundAiService {
+  MockBackgroundAiService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get isRunning => (super.noSuchMethod(
+        Invocation.getter(#isRunning),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i4.Future<void> initialize() => (super.noSuchMethod(
+        Invocation.method(
+          #initialize,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> startBackgroundTask({String? taskDescription}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #startBackgroundTask,
+          [],
+          {#taskDescription: taskDescription},
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> updateNotification({
+    required String? title,
+    required String? text,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateNotification,
+          [],
+          {
+            #title: title,
+            #text: text,
+          },
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> stopBackgroundTask() => (super.noSuchMethod(
+        Invocation.method(
+          #stopBackgroundTask,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> isServiceRunning() => (super.noSuchMethod(
+        Invocation.method(
+          #isServiceRunning,
+          [],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 }

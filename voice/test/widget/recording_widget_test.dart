@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:bloc_test/bloc_test.dart';
 
 import 'package:voice_autobiography_flutter/domain/entities/recording_state.dart';
 import 'package:voice_autobiography_flutter/presentation/bloc/recording/recording_bloc.dart';
+import 'package:voice_autobiography_flutter/presentation/bloc/recording/recording_event.dart';
+import 'package:voice_autobiography_flutter/presentation/bloc/recording/recording_state.dart';
 import 'package:voice_autobiography_flutter/presentation/widgets/recording_widget.dart';
 
 class MockRecordingBloc extends Mock implements RecordingBloc {}
@@ -107,10 +110,13 @@ void main() {
     testWidgets('显示录音时长格式正确', (WidgetTester tester) async {
       // 测试不同的时长格式
       const recordingStates = [
-        RecordingState(status: RecordingStatus.recording, duration: 500), // 0.5秒
+        RecordingState(
+            status: RecordingStatus.recording, duration: 500), // 0.5秒
         RecordingState(status: RecordingStatus.recording, duration: 5000), // 5秒
-        RecordingState(status: RecordingStatus.recording, duration: 65000), // 1分5秒
-        RecordingState(status: RecordingStatus.recording, duration: 3665000), // 1小时1分5秒
+        RecordingState(
+            status: RecordingStatus.recording, duration: 65000), // 1分5秒
+        RecordingState(
+            status: RecordingStatus.recording, duration: 3665000), // 1小时1分5秒
       ];
 
       whenListen(

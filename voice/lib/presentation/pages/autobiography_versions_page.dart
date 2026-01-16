@@ -139,7 +139,7 @@ class AutobiographyVersionsPage extends StatelessWidget {
                                 .textTheme
                                 .bodySmall
                                 ?.color
-                                ?.withOpacity(0.7),
+                                ?.withValues(alpha: 0.7),
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -151,7 +151,7 @@ class AutobiographyVersionsPage extends StatelessWidget {
                                 .textTheme
                                 .bodySmall
                                 ?.color
-                                ?.withOpacity(0.5),
+                                ?.withValues(alpha: 0.5),
                           ),
                         ),
                       ],

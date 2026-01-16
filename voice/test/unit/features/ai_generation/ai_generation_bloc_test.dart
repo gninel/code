@@ -13,21 +13,23 @@ import 'package:voice_autobiography_flutter/domain/usecases/ai_generation_usecas
 import 'package:voice_autobiography_flutter/domain/repositories/autobiography_repository.dart';
 import 'package:voice_autobiography_flutter/core/errors/failures.dart';
 import 'package:voice_autobiography_flutter/data/services/background_ai_service.dart';
+import 'package:voice_autobiography_flutter/data/services/ai_generation_persistence_service.dart';
 
 import 'ai_generation_bloc_test.mocks.dart';
 
 @GenerateMocks([
   AiGenerationUseCases,
   AutobiographyRepository,
+  AiGenerationPersistenceService,
+  BackgroundAiService,
 ])
-class MockBackgroundAiService extends Mock implements BackgroundAiService {}
-
 void main() {
   group('AiGenerationBloc - 完整重新生成功能', () {
     late AiGenerationBloc aiGenerationBloc;
     late MockAiGenerationUseCases mockAiGenerationUseCases;
     late MockAutobiographyRepository mockAutobiographyRepository;
     late MockBackgroundAiService mockBackgroundService;
+    late MockAiGenerationPersistenceService mockPersistenceService;
 
     setUp(() {
       mockAiGenerationUseCases = MockAiGenerationUseCases();
@@ -40,10 +42,26 @@ void main() {
       when(mockBackgroundService.stopBackgroundTask())
           .thenAnswer((_) async => true);
 
+      mockPersistenceService = MockAiGenerationPersistenceService();
+      when(mockPersistenceService.clearGenerationState())
+          .thenAnswer((_) async {});
+      when(mockPersistenceService.saveGenerationState(
+        generationType: anyNamed('generationType'),
+        voiceRecordIds: anyNamed('voiceRecordIds'),
+        currentAutobiographyId: anyNamed('currentAutobiographyId'),
+        generatedContent: anyNamed('generatedContent'),
+        generatedTitle: anyNamed('generatedTitle'),
+        generatedSummary: anyNamed('generatedSummary'),
+        status: anyNamed('status'),
+      )).thenAnswer((_) async {});
+
+      when(mockPersistenceService.getUnfinishedTaskInfo()).thenReturn(null);
+
       aiGenerationBloc = AiGenerationBloc(
         mockAiGenerationUseCases,
         mockAutobiographyRepository,
         mockBackgroundService,
+        mockPersistenceService,
       );
     });
 
@@ -148,8 +166,8 @@ void main() {
       ],
       verify: (bloc) {
         verify(mockAutobiographyRepository.getAllAutobiographies()).called(1);
-        verify(mockAutobiographyRepository.deleteAutobiographies(['existing-1']))
-            .called(1);
+        verify(mockAutobiographyRepository
+            .deleteAutobiographies(['existing-1'])).called(1);
         verify(mockAiGenerationUseCases.generateCompleteAutobiography(
           voiceRecords: testVoiceRecords,
           style: AutobiographyStyle.narrative,
@@ -221,7 +239,8 @@ void main() {
           style: AutobiographyStyle.narrative,
           wordCount: null,
         )).thenAnswer(
-          (_) async => Left(AiGenerationFailure.contentGenerationFailed(message: 'AI服务错误')),
+          (_) async => Left(
+              AiGenerationFailure.contentGenerationFailed(message: 'AI服务错误')),
         );
       },
       build: () => aiGenerationBloc,
@@ -240,8 +259,8 @@ void main() {
       ],
       verify: (bloc) {
         verify(mockAutobiographyRepository.getAllAutobiographies()).called(1);
-        verify(mockAutobiographyRepository.deleteAutobiographies(['existing-1']))
-            .called(1);
+        verify(mockAutobiographyRepository
+            .deleteAutobiographies(['existing-1'])).called(1);
         verify(mockAiGenerationUseCases.generateCompleteAutobiography(
           voiceRecords: testVoiceRecords,
           style: AutobiographyStyle.narrative,

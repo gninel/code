@@ -140,7 +140,7 @@ class _VoiceRecordsListState extends State<VoiceRecordsList> {
                   Icon(
                     Icons.mic_none,
                     size: 64,
-                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                    color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -155,7 +155,7 @@ class _VoiceRecordsListState extends State<VoiceRecordsList> {
                               .textTheme
                               .bodyMedium
                               ?.color
-                              ?.withOpacity(0.6),
+                              ?.withValues(alpha: 0.6),
                         ),
                   ),
                 ],
@@ -185,7 +185,7 @@ class _VoiceRecordsListState extends State<VoiceRecordsList> {
                             // borderRadius: BorderRadius.circular(8),
                             // border: Border.all(
                             //   color:
-                            //       Theme.of(context).dividerColor.withOpacity(0.5),
+                            //       Theme.of(context).dividerColor.withValues(alpha: 0.5),
                             // ),
                             ),
                         child: TextField(
@@ -199,14 +199,14 @@ class _VoiceRecordsListState extends State<VoiceRecordsList> {
                                   .textTheme
                                   .bodySmall
                                   ?.color
-                                  ?.withOpacity(0.5),
+                                  ?.withValues(alpha: 0.5),
                               fontSize: 13,
                             ),
                             prefixIcon: Icon(Icons.search,
                                 color: Theme.of(context)
                                     .iconTheme
                                     .color
-                                    ?.withOpacity(0.5),
+                                    ?.withValues(alpha: 0.5),
                                 size: 18),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
@@ -544,7 +544,7 @@ class VoiceRecordCard extends StatelessWidget {
         side: isSelected
             ? BorderSide(color: Theme.of(context).primaryColor, width: 2)
             : BorderSide(
-                color: Theme.of(context).dividerColor.withOpacity(0.1)),
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
       ),
       child: InkWell(
         onTap: onTap,
@@ -583,7 +583,7 @@ class VoiceRecordCard extends StatelessWidget {
                     child: Icon(
                       Icons.more_vert,
                       color:
-                          Theme.of(context).iconTheme.color?.withOpacity(0.6),
+                          Theme.of(context).iconTheme.color?.withValues(alpha: 0.6),
                       size: 20,
                     ),
                   ),
@@ -627,10 +627,10 @@ class VoiceRecordCard extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: getTagColor(tag).withOpacity(0.1),
+                              color: getTagColor(tag).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: getTagColor(tag).withOpacity(0.3),
+                                color: getTagColor(tag).withValues(alpha: 0.3),
                               ),
                             ),
                             child: Text(

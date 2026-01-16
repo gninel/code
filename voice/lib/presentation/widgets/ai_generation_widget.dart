@@ -183,7 +183,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         margin: EdgeInsets.zero,
         decoration: BoxDecoration(
-          color: const Color(0xFF4CAF50).withOpacity(0.1),
+          color: const Color(0xFF4CAF50).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -251,7 +251,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
                     state.progressDescription,
                     style: TextStyle(
                       fontSize: 15,
-                      color: const Color(0xFF5D4037).withOpacity(0.8),
+                      color: const Color(0xFF5D4037).withValues(alpha: 0.8),
                       height: 1.4,
                     ),
                   ),
@@ -327,7 +327,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
                   : 'AI正在后台优化内容，请稍候...',
               style: TextStyle(
                 fontSize: 15,
-                color: const Color(0xFF5D4037).withOpacity(0.9),
+                color: const Color(0xFF5D4037).withValues(alpha: 0.9),
                 height: 1.5,
                 letterSpacing: 0.5,
               ),
@@ -345,7 +345,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
         ),
       ),
       child: Column(
@@ -396,7 +396,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
                   backgroundColor: Theme.of(context)
                       .colorScheme
                       .primaryContainer
-                      .withOpacity(0.5),
+                      .withValues(alpha: 0.5),
                   padding: EdgeInsets.zero,
                   visualDensity: VisualDensity.compact,
                 ),
@@ -413,7 +413,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
                 color: Theme.of(context)
                     .colorScheme
                     .surfaceContainerHighest
-                    .withOpacity(0.3),
+                    .withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -445,9 +445,9 @@ class _AiGenerationViewState extends State<AiGenerationView> {
             decoration: BoxDecoration(
               border: Border.all(
                   color:
-                      Theme.of(context).colorScheme.outline.withOpacity(0.1)),
+                      Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
               borderRadius: BorderRadius.circular(8),
-              color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
             ),
             padding: const EdgeInsets.all(16.0),
             child: Text(
@@ -469,7 +469,7 @@ class _AiGenerationViewState extends State<AiGenerationView> {
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),

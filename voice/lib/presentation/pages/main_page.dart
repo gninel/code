@@ -35,7 +35,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _checkUnfinishedTasks();
+    // _checkUnfinishedTasks();
   }
 
   @override
@@ -79,7 +79,7 @@ class _MainPageState extends State<MainPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
             Icon(Icons.info_outline, color: Colors.blue),
             SizedBox(width: 8),
@@ -141,6 +141,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('[MainPage] build called. Current Index: $_currentIndex');
     return BlocListener<AiGenerationBloc, AiGenerationState>(
       listener: (context, state) {
         // 当 AI 生成完成时，显示通知（仅在主页面，不在生成页面时）
@@ -181,7 +182,7 @@ class _MainPageState extends State<MainPage> {
       child: BlocBuilder<AiGenerationBloc, AiGenerationState>(
         builder: (context, generationState) {
           return Scaffold(
-            // backgroundColor: Theme.of(context).scaffoldBackgroundColor, // Default
+            backgroundColor: Colors.red, // DEBUG: Red
             body: PageView(
               controller: _pageController,
               onPageChanged: (index) {
@@ -206,7 +207,7 @@ class _MainPageState extends State<MainPage> {
                     Theme.of(context).bottomNavigationBarTheme.backgroundColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1), // 浅色阴影
+                    color: Colors.black.withValues(alpha: 0.1), // 浅色阴影
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -338,7 +339,7 @@ class _MainPageState extends State<MainPage> {
                         .textTheme
                         .bodySmall
                         ?.color
-                        ?.withOpacity(0.5),
+                        ?.withValues(alpha: 0.5),
                     size: 20),
               ],
             ),
@@ -406,6 +407,7 @@ class _RecordingTabState extends State<RecordingTab>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green, // DEBUG: Green
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -419,8 +421,11 @@ class _RecordingTabState extends State<RecordingTab>
           indicatorColor: Theme.of(context).primaryColor,
           indicatorWeight: 2,
           labelColor: Theme.of(context).primaryColor,
-          unselectedLabelColor:
-              Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+          unselectedLabelColor: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.color
+              ?.withValues(alpha: 0.6),
           labelStyle:
               const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           unselectedLabelStyle: const TextStyle(fontSize: 16),

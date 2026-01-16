@@ -13,6 +13,11 @@ import 'package:dio/src/options.dart' as _i2;
 import 'package:dio/src/response.dart' as _i6;
 import 'package:dio/src/transformer.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i11;
+import 'package:voice_autobiography_flutter/core/services/prompt_loader_service.dart'
+    as _i10;
+import 'package:voice_autobiography_flutter/domain/entities/autobiography.dart'
+    as _i12;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -833,4 +838,327 @@ class MockDio extends _i1.Mock implements _i7.Dio {
           ),
         ),
       ) as _i7.Dio);
+}
+
+/// A class which mocks [PromptLoaderService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPromptLoaderService extends _i1.Mock
+    implements _i10.PromptLoaderService {
+  MockPromptLoaderService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.Future<void> init() => (super.noSuchMethod(
+        Invocation.method(
+          #init,
+          [],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+
+  @override
+  String getChapterGenerationSystemPrompt() => (super.noSuchMethod(
+        Invocation.method(
+          #getChapterGenerationSystemPrompt,
+          [],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getChapterGenerationSystemPrompt,
+            [],
+          ),
+        ),
+      ) as String);
+
+  @override
+  String getNewChapterPrompt(String? newContent) => (super.noSuchMethod(
+        Invocation.method(
+          #getNewChapterPrompt,
+          [newContent],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getNewChapterPrompt,
+            [newContent],
+          ),
+        ),
+      ) as String);
+
+  @override
+  String getMergeChapterPrompt(
+    String? originalContent,
+    String? newContent,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getMergeChapterPrompt,
+          [
+            originalContent,
+            newContent,
+          ],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getMergeChapterPrompt,
+            [
+              originalContent,
+              newContent,
+            ],
+          ),
+        ),
+      ) as String);
+
+  @override
+  String getStructureAnalysisSystemPrompt() => (super.noSuchMethod(
+        Invocation.method(
+          #getStructureAnalysisSystemPrompt,
+          [],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getStructureAnalysisSystemPrompt,
+            [],
+          ),
+        ),
+      ) as String);
+
+  @override
+  String getStructureAnalysisPrompt(
+    String? chaptersDescription,
+    String? newContent,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getStructureAnalysisPrompt,
+          [
+            chaptersDescription,
+            newContent,
+          ],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getStructureAnalysisPrompt,
+            [
+              chaptersDescription,
+              newContent,
+            ],
+          ),
+        ),
+      ) as String);
+
+  @override
+  String getAutobiographyGenerationSystemPrompt() => (super.noSuchMethod(
+        Invocation.method(
+          #getAutobiographyGenerationSystemPrompt,
+          [],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getAutobiographyGenerationSystemPrompt,
+            [],
+          ),
+        ),
+      ) as String);
+
+  @override
+  String getAutobiographyGenerationPrompt({
+    required String? combinedContent,
+    required _i12.AutobiographyStyle? style,
+    required int? targetWordCount,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getAutobiographyGenerationPrompt,
+          [],
+          {
+            #combinedContent: combinedContent,
+            #style: style,
+            #targetWordCount: targetWordCount,
+          },
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getAutobiographyGenerationPrompt,
+            [],
+            {
+              #combinedContent: combinedContent,
+              #style: style,
+              #targetWordCount: targetWordCount,
+            },
+          ),
+        ),
+      ) as String);
+
+  @override
+  (String, String) getTitleGenerationPrompt(String? content) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTitleGenerationPrompt,
+          [content],
+        ),
+        returnValue: (
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getTitleGenerationPrompt,
+              [content],
+            ),
+          ),
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getTitleGenerationPrompt,
+              [content],
+            ),
+          )
+        ),
+      ) as (String, String));
+
+  @override
+  (String, String) getSummaryGenerationPrompt(String? content) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getSummaryGenerationPrompt,
+          [content],
+        ),
+        returnValue: (
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getSummaryGenerationPrompt,
+              [content],
+            ),
+          ),
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getSummaryGenerationPrompt,
+              [content],
+            ),
+          )
+        ),
+      ) as (String, String));
+
+  @override
+  (String, String) getInterviewQuestionPrompt({
+    required String? userContentSummary,
+    required List<String>? answeredQuestions,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getInterviewQuestionPrompt,
+          [],
+          {
+            #userContentSummary: userContentSummary,
+            #answeredQuestions: answeredQuestions,
+          },
+        ),
+        returnValue: (
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getInterviewQuestionPrompt,
+              [],
+              {
+                #userContentSummary: userContentSummary,
+                #answeredQuestions: answeredQuestions,
+              },
+            ),
+          ),
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getInterviewQuestionPrompt,
+              [],
+              {
+                #userContentSummary: userContentSummary,
+                #answeredQuestions: answeredQuestions,
+              },
+            ),
+          )
+        ),
+      ) as (String, String));
+
+  @override
+  (String, String) getContentOptimizationPrompt({
+    required String? content,
+    required String? optimizationType,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getContentOptimizationPrompt,
+          [],
+          {
+            #content: content,
+            #optimizationType: optimizationType,
+          },
+        ),
+        returnValue: (
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getContentOptimizationPrompt,
+              [],
+              {
+                #content: content,
+                #optimizationType: optimizationType,
+              },
+            ),
+          ),
+          _i11.dummyValue<String>(
+            this,
+            Invocation.method(
+              #getContentOptimizationPrompt,
+              [],
+              {
+                #content: content,
+                #optimizationType: optimizationType,
+              },
+            ),
+          )
+        ),
+      ) as (String, String));
+
+  @override
+  double getTemperature(String? promptType) => (super.noSuchMethod(
+        Invocation.method(
+          #getTemperature,
+          [promptType],
+        ),
+        returnValue: 0.0,
+      ) as double);
+
+  @override
+  int getMaxTokens(String? promptType) => (super.noSuchMethod(
+        Invocation.method(
+          #getMaxTokens,
+          [promptType],
+        ),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  String getPromptVersion() => (super.noSuchMethod(
+        Invocation.method(
+          #getPromptVersion,
+          [],
+        ),
+        returnValue: _i11.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getPromptVersion,
+            [],
+          ),
+        ),
+      ) as String);
 }

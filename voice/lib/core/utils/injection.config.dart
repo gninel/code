@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -116,11 +117,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1073.AutoTaggerService());
     gh.lazySingleton<_i783.BackgroundAiService>(
         () => _i783.BackgroundAiService());
-    gh.lazySingleton<_i550.CloudSyncService>(() => _i550.CloudSyncService());
     gh.lazySingleton<_i724.AiGenerationPersistenceService>(() =>
         _i724.AiGenerationPersistenceService(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i1000.AutobiographyRepository>(
         () => _i1015.FileAutobiographyRepository());
+    gh.lazySingleton<_i550.CloudSyncService>(
+        () => _i550.CloudSyncService(dio: gh<_i361.Dio>()));
     gh.lazySingleton<_i372.VoiceRecordRepository>(
         () => _i158.FileVoiceRecordRepository());
     gh.lazySingleton<_i924.VoiceRecognitionRepository>(() =>

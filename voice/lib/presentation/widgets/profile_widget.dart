@@ -122,8 +122,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 height: 72,
                 decoration: BoxDecoration(
                   color: isLoggedIn
-                      ? Theme.of(context).primaryColor.withOpacity(0.3)
-                      : Theme.of(context).primaryColor.withOpacity(0.1),
+                      ? Theme.of(context).primaryColor.withValues(alpha: 0.3)
+                      : Theme.of(context).primaryColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -158,7 +158,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.6),
+                            ?.withValues(alpha: 0.6),
                         fontSize: 14,
                       ),
                     ),
@@ -197,7 +197,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               .textTheme
                               .bodyMedium
                               ?.color
-                              ?.withOpacity(0.7)
+                              ?.withValues(alpha: 0.7)
                           : Theme.of(context).colorScheme.onPrimary,
                       fontSize: 13,
                     ),
@@ -237,7 +237,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-              color: Theme.of(context).dividerColor.withOpacity(0.1)),
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -289,7 +289,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     .textTheme
                     .bodySmall
                     ?.color
-                    ?.withOpacity(0.7),
+                    ?.withValues(alpha: 0.7),
                 fontSize: 12,
               ),
             ),
@@ -300,7 +300,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           label,
           style: TextStyle(
             color:
-                Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
             fontSize: 12,
           ),
         ),
@@ -316,7 +316,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-              color: Theme.of(context).dividerColor.withOpacity(0.1)),
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
         ),
         child: Column(
           children: [
@@ -417,7 +417,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-              color: Theme.of(context).dividerColor.withOpacity(0.1)),
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
         ),
         child: Column(
           children: [
@@ -484,14 +484,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.6),
+                      ?.withValues(alpha: 0.6),
                   fontSize: 14,
                 ),
               ),
             const SizedBox(width: 8),
             Icon(
               Icons.chevron_right,
-              color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
+              color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
               size: 20,
             ),
           ],
@@ -555,7 +555,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Divider(
-        color: Theme.of(context).dividerColor.withOpacity(0.2),
+        color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
         height: 1,
       ),
     );
@@ -665,7 +665,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           .textTheme
                           .bodyMedium
                           ?.color
-                          ?.withOpacity(0.6)),
+                          ?.withValues(alpha: 0.6)),
                   enabledBorder: UnderlineInputBorder(
                     borderSide:
                         BorderSide(color: Theme.of(context).dividerColor),
@@ -688,7 +688,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           .textTheme
                           .bodyMedium
                           ?.color
-                          ?.withOpacity(0.6)),
+                          ?.withValues(alpha: 0.6)),
                   enabledBorder: UnderlineInputBorder(
                     borderSide:
                         BorderSide(color: Theme.of(context).dividerColor),
@@ -713,7 +713,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           .textTheme
                           .bodyMedium
                           ?.color
-                          ?.withOpacity(0.6)),
+                          ?.withValues(alpha: 0.6)),
                 ),
               ),
             ],
@@ -879,7 +879,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.8)),
+                      ?.withValues(alpha: 0.8)),
             ),
             const SizedBox(height: 8),
             Text(
@@ -889,7 +889,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.6)),
+                      ?.withValues(alpha: 0.6)),
             ),
             const SizedBox(height: 8),
             Text(
@@ -899,7 +899,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.4)),
+                      ?.withValues(alpha: 0.4)),
             ),
           ],
         ),

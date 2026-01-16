@@ -11,6 +11,7 @@ import 'package:voice_autobiography_flutter/presentation/bloc/ai_generation/ai_g
 import 'package:voice_autobiography_flutter/domain/usecases/ai_generation_usecases.dart';
 import 'package:voice_autobiography_flutter/domain/repositories/autobiography_repository.dart';
 import 'package:voice_autobiography_flutter/data/services/background_ai_service.dart';
+import 'package:voice_autobiography_flutter/data/services/ai_generation_persistence_service.dart';
 import 'package:voice_autobiography_flutter/domain/entities/voice_record.dart';
 import 'package:voice_autobiography_flutter/domain/entities/autobiography.dart';
 import 'package:voice_autobiography_flutter/domain/entities/chapter.dart';
@@ -22,17 +23,20 @@ import 'ai_generation_bloc_complete_test.mocks.dart';
   AiGenerationUseCases,
   AutobiographyRepository,
   BackgroundAiService,
+  AiGenerationPersistenceService,
 ])
 void main() {
   late AiGenerationBloc bloc;
   late MockAiGenerationUseCases mockUseCases;
   late MockAutobiographyRepository mockRepository;
   late MockBackgroundAiService mockBackgroundService;
+  late MockAiGenerationPersistenceService mockPersistenceService;
 
   setUp(() {
     mockUseCases = MockAiGenerationUseCases();
     mockRepository = MockAutobiographyRepository();
     mockBackgroundService = MockBackgroundAiService();
+    mockPersistenceService = MockAiGenerationPersistenceService();
 
     // 默认 mock 后台服务返回Future
     when(mockBackgroundService.startBackgroundTask(
@@ -41,10 +45,28 @@ void main() {
     when(mockBackgroundService.stopBackgroundTask())
         .thenAnswer((_) async => true);
 
+    // Mock persistence service
+    when(mockPersistenceService.saveGenerationState(
+      generationType: anyNamed('generationType'),
+      voiceRecordIds: anyNamed('voiceRecordIds'),
+      currentAutobiographyId: anyNamed('currentAutobiographyId'),
+      status: anyNamed('status'),
+    )).thenAnswer((_) async {});
+    when(mockPersistenceService.clearGenerationState())
+        .thenAnswer((_) async {});
+    when(mockPersistenceService.updateGenerationProgress(
+      generatedContent: anyNamed('generatedContent'),
+      generatedTitle: anyNamed('generatedTitle'),
+      generatedSummary: anyNamed('generatedSummary'),
+      status: anyNamed('status'),
+    )).thenAnswer((_) async {});
+    when(mockPersistenceService.getUnfinishedTaskInfo()).thenReturn(null);
+
     bloc = AiGenerationBloc(
       mockUseCases,
       mockRepository,
       mockBackgroundService,
+      mockPersistenceService,
     );
   });
 

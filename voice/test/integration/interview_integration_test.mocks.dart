@@ -11,9 +11,11 @@ import 'package:mockito/src/dummies.dart' as _i7;
 import 'package:sqflite/sqflite.dart' as _i3;
 import 'package:voice_autobiography_flutter/core/errors/failures.dart' as _i9;
 import 'package:voice_autobiography_flutter/data/services/database_service.dart'
-    as _i11;
+    as _i12;
 import 'package:voice_autobiography_flutter/data/services/doubao_ai_service.dart'
     as _i5;
+import 'package:voice_autobiography_flutter/data/services/interview_question_pool.dart'
+    as _i11;
 import 'package:voice_autobiography_flutter/domain/entities/autobiography.dart'
     as _i6;
 import 'package:voice_autobiography_flutter/domain/entities/voice_record.dart'
@@ -486,10 +488,56 @@ class MockVoiceRecordRepository extends _i1.Mock
           ) as _i4.Future<_i2.Either<_i9.Failure, Map<String, dynamic>>>);
 }
 
+/// A class which mocks [InterviewQuestionPool].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockInterviewQuestionPool extends _i1.Mock
+    implements _i11.InterviewQuestionPool {
+  MockInterviewQuestionPool() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  List<String> getQuestions(int? count) => (super.noSuchMethod(
+        Invocation.method(
+          #getQuestions,
+          [count],
+        ),
+        returnValue: <String>[],
+      ) as List<String>);
+
+  @override
+  void reset() => super.noSuchMethod(
+        Invocation.method(
+          #reset,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addCustomQuestions(List<String>? questions) => super.noSuchMethod(
+        Invocation.method(
+          #addCustomQuestions,
+          [questions],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  Map<String, dynamic> getStatus() => (super.noSuchMethod(
+        Invocation.method(
+          #getStatus,
+          [],
+        ),
+        returnValue: <String, dynamic>{},
+      ) as Map<String, dynamic>);
+}
+
 /// A class which mocks [DatabaseService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseService extends _i1.Mock implements _i11.DatabaseService {
+class MockDatabaseService extends _i1.Mock implements _i12.DatabaseService {
   @override
   _i4.Future<_i3.Database> get database => (super.noSuchMethod(
         Invocation.getter(#database),
