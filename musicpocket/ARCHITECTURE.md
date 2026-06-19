@@ -115,8 +115,19 @@ musicpocket/
 │   ├── Dockerfile
 │   ├── docker-compose.yml
 │   ├── requirements.txt
+│   ├── pytest.ini
+│   ├── deploy/                  # 生产部署
+│   │   ├── docker-compose.prod.yml
+│   │   ├── nginx.conf
+│   │   └── .env.example
+│   ├── scripts/
+│   │   └── monitor.py           # 解析器健康监控
+│   ├── tests/                   # 后端测试
+│   │   ├── test_parsers.py      # URL匹配和ID提取
+│   │   ├── test_services.py     # 链接检测服务
+│   │   └── test_api.py          # API集成测试
 │   └── app/
-│       ├── main.py              # FastAPI 入口
+│       ├── main.py              # FastAPI 入口（含生命周期管理）
 │       ├── config.py            # 配置管理
 │       ├── models/              # 数据库模型
 │       │   ├── task.py          # 转换任务
@@ -124,36 +135,85 @@ musicpocket/
 │       ├── schemas/             # Pydantic 请求/响应模型
 │       │   └── task.py
 │       ├── routers/             # API 路由
-│       │   └── convert.py       # 转换相关接口
+│       │   ├── convert.py       # 转换相关接口
+│       │   └── auth.py          # 设备认证接口
+│       ├── middleware/           # 中间件
+│       │   ├── auth.py          # JWT 设备认证
+│       │   └── rate_limit.py    # 请求限流
 │       ├── parsers/             # 平台解析器（核心）
 │       │   ├── base.py          # 解析器基类
 │       │   ├── registry.py      # 注册中心
 │       │   ├── douyin.py        # 抖音
 │       │   ├── tiktok.py        # TikTok
 │       │   ├── bilibili.py      # B站
-│       │   └── xiaohongshu.py   # 小红书
+│       │   ├── xiaohongshu.py   # 小红书
+│       │   └── browser/         # 兜底方案
+│       │       └── playwright_parser.py  # 无头浏览器解析
 │       ├── services/            # 业务服务
-│       │   ├── link_service.py  # 链接识别
-│       │   ├── download_service.py   # 下载
+│       │   ├── link_service.py       # 链接识别
+│       │   ├── download_service.py   # 流式下载
 │       │   ├── transcode_service.py  # FFmpeg转码
-│       │   └── task_service.py       # 任务编排
+│       │   ├── task_service.py       # 任务编排（MVP）
+│       │   ├── celery_worker.py      # Celery异步任务（生产）
+│       │   ├── cleanup_service.py    # 过期文件清理
+│       │   ├── cookie_manager.py     # Cookie池管理
+│       │   └── proxy_pool.py         # 代理IP池
 │       └── utils/
 └── app/                         # Flutter 客户端
     ├── pubspec.yaml
     └── lib/
-        ├── main.dart            # 入口
+        ├── main.dart            # 入口（含生命周期和剪贴板监听）
+        ├── theme/
+        │   └── app_theme.dart   # 统一主题（颜色/样式）
         ├── models/
         │   └── audio_task.dart  # 音频任务模型
         ├── services/
         │   ├── api_service.dart          # API 通信
         │   ├── audio_player_service.dart # 音频播放
-        │   └── local_storage_service.dart# 本地存储
+        │   ├── local_storage_service.dart# 本地SQLite存储
+        │   ├── clipboard_service.dart    # 剪贴板自动检测
+        │   └── auth_service.dart         # 设备认证
+        ├── widgets/
+        │   ├── clipboard_banner.dart     # 剪贴板检测提示条
+        │   ├── platform_icon.dart        # 平台图标组件
+        │   └── waveform_logo.dart        # 波形Logo组件
         ├── bloc/
         │   ├── task/            # 转换任务状态
         │   ├── library/         # 音频库状态
         │   └── player/          # 播放器状态
         └── screens/
-            ├── home_screen.dart     # 主页（粘贴+转换）
+            ├── home_screen.dart     # 主页（粘贴+转换+剪贴板检测）
             ├── library_screen.dart  # 音频库列表
-            └── player_screen.dart   # 播放器界面
+            ├── player_screen.dart   # 播放器界面
+            └── settings_screen.dart # 设置页面
+```
+
+## 生产部署架构
+
+```
+                    ┌─────────┐
+                    │  Nginx  │  SSL + 负载均衡
+                    └────┬────┘
+                         │
+              ┌──────────┼──────────┐
+              │          │          │
+         ┌────┴───┐ ┌───┴────┐ ┌───┴────┐
+         │ API x2 │ │ API x2 │ │ API x2 │  FastAPI 无状态
+         └────┬───┘ └───┬────┘ └───┬────┘
+              │         │          │
+              └─────────┼──────────┘
+                        │
+              ┌─────────┴─────────┐
+              │     Redis         │  任务队列 + 缓存
+              └─────────┬─────────┘
+                        │
+              ┌─────────┼─────────┐
+              │         │         │
+         ┌────┴───┐ ┌──┴────┐ ┌──┴────┐
+         │Worker1 │ │Worker2│ │Worker3│  Celery 解析+转码
+         └────────┘ └───────┘ └───────┘
+                        │
+              ┌─────────┴─────────┐
+              │   PostgreSQL      │  用户/任务/配额
+              └───────────────────┘
 ```

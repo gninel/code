@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,11 +9,17 @@ import '../bloc/player/player_bloc.dart';
 import '../bloc/player/player_state.dart';
 import '../bloc/player/player_event.dart';
 import '../models/audio_task.dart';
+import '../services/clipboard_service.dart';
+import '../widgets/clipboard_banner.dart';
+import '../widgets/waveform_logo.dart';
 import 'library_screen.dart';
 import 'player_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final ClipboardService? clipboardService;
+
+  const HomeScreen({super.key, this.clipboardService});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,17 +30,48 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentTab = 0;
   String _selectedFormat = 'mp3';
   String _selectedBitrate = '192k';
+  String? _detectedClipboardText;
+  StreamSubscription? _clipboardSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _clipboardSub = widget.clipboardService?.onLinkDetected.listen((text) {
+      if (mounted) {
+        setState(() => _detectedClipboardText = text);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: IndexedStack(
-          index: _currentTab,
+        child: Column(
           children: [
-            _buildConvertTab(),
-            const LibraryScreen(),
+            if (_detectedClipboardText != null)
+              ClipboardBanner(
+                detectedText: _detectedClipboardText!,
+                onConvert: () {
+                  _urlController.text = _detectedClipboardText!;
+                  setState(() {
+                    _detectedClipboardText = null;
+                    _currentTab = 0;
+                  });
+                  _onConvert();
+                },
+                onDismiss: () => setState(() => _detectedClipboardText = null),
+              ),
+            Expanded(
+              child: IndexedStack(
+                index: _currentTab,
+                children: [
+                  _buildConvertTab(),
+                  const LibraryScreen(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -72,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Logo
           Row(
             children: [
-              _buildLogo(),
+              const WaveformLogo(size: 32),
               const SizedBox(width: 12),
               const Text(
                 'MusicPocket',
@@ -80,6 +118,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
                 ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined, size: 22),
+                onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const SettingsScreen())),
               ),
             ],
           ),
@@ -180,26 +224,6 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 32),
           // 使用流程
           _buildFlowSteps(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLogo() {
-    return SizedBox(
-      width: 32,
-      height: 32,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(width: 4, height: 10, decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(1))),
-          const SizedBox(width: 2),
-          Container(width: 4, height: 20, decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(1))),
-          const SizedBox(width: 2),
-          Container(width: 4, height: 28, decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(1))),
-          const SizedBox(width: 2),
-          Container(width: 4, height: 6, decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(1))),
         ],
       ),
     );
@@ -472,6 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _clipboardSub?.cancel();
     _urlController.dispose();
     super.dispose();
   }
